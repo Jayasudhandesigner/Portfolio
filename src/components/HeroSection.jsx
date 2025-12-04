@@ -16,17 +16,15 @@ function HeroModel() {
         console.error('Model loading error:', error)
     }
 
-    useFrame(({ mouse, camera }) => {
-        // Light follows cursor position (same as HTML implementation)
+    useFrame(({ mouse }) => {
+        // Light follows cursor position - simplified for orthographic camera
         if (lightRef.current) {
-            const mouseVector = new THREE.Vector2(
-                mouse.x,
-                mouse.y
+            // Directly use mouse coordinates scaled up
+            lightRef.current.position.set(
+                mouse.x * 10,  // Scale mouse X to world coordinates
+                mouse.y * 10,  // Scale mouse Y to world coordinates
+                10             // Position slightly in front of model (model is at z=14)
             )
-
-            const vector = new THREE.Vector3(mouseVector.x, mouseVector.y, 0.5).unproject(camera)
-            const dir = vector.sub(camera.position).normalize()
-            lightRef.current.position.copy(camera.position.clone().add(dir.multiplyScalar(11)))
         }
 
         // Optional: Gentle auto-rotation (you can remove if not needed)
@@ -41,8 +39,8 @@ function HeroModel() {
             {/* Dynamic cursor light - INTENSIFIED */}
             <pointLight
                 ref={lightRef}
-                intensity={170}
-                distance={10}
+                intensity={200}
+                distance={50}
                 color="#ffffff"
             />
 
@@ -82,7 +80,7 @@ export default function HeroSection() {
             {/* Using orthographic camera */}
             <Canvas
                 orthographic
-                camera={{ position: [0, 0, 20], zoom: 50 }}
+                camera={{ position: [0, 0, 20], zoom: 160 }}
             >
                 <color attach="background" args={['#000000']} />
                 <Suspense fallback={<Loader />}>
