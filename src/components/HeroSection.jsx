@@ -26,7 +26,7 @@ function HeroModel() {
 
             const vector = new THREE.Vector3(mouseVector.x, mouseVector.y, 0.5).unproject(camera)
             const dir = vector.sub(camera.position).normalize()
-            lightRef.current.position.copy(camera.position.clone().add(dir.multiplyScalar(10)))
+            lightRef.current.position.copy(camera.position.clone().add(dir.multiplyScalar(11)))
         }
 
         // Optional: Gentle auto-rotation (you can remove if not needed)
@@ -37,26 +37,24 @@ function HeroModel() {
 
     return (
         <>
-            {/* Ambient light for base visibility - INTENSIFIED */}
-            <ambientLight intensity={1.5} />
 
             {/* Dynamic cursor light - INTENSIFIED */}
             <pointLight
                 ref={lightRef}
-                intensity={15}
-                distance={50}
+                intensity={170}
+                distance={10}
                 color="#ffffff"
             />
 
             {/* Additional strong lights to illuminate the model */}
-            <pointLight position={[0, 5, 5]} intensity={5} color="#ffffff" />
+            <pointLight position={[0, -2, 12]} intensity={19} color="#085264ff" />
 
             {/* Model or fallback - using exact HTML coordinates */}
             {scene ? (
                 <primitive
                     ref={modelRef}
                     object={scene}
-                    position={[0, -2, 12]}  // Exact position from HTML
+                    position={[0, -2, 14]}  // Exact position from HTML
                     scale={10}              // Exact scale from HTML
                     rotation={[0, 0, 0]}    // Exact rotation from HTML
                 />
@@ -73,11 +71,7 @@ function HeroModel() {
 function Loader() {
     return (
         <>
-            <ambientLight intensity={1} />
-            <mesh>
-                <sphereGeometry args={[1, 32, 32]} />
-                <meshStandardMaterial color="#667eea" wireframe />
-            </mesh>
+            <ambientLight intensity={10} />
         </>
     )
 }
@@ -85,8 +79,11 @@ function Loader() {
 export default function HeroSection() {
     return (
         <div className="canvas-wrapper">
-            {/* Using exact camera settings from HTML */}
-            <Canvas camera={{ position: [0, 0, 20], fov: 45 }}>
+            {/* Using orthographic camera */}
+            <Canvas
+                orthographic
+                camera={{ position: [0, 0, 20], zoom: 50 }}
+            >
                 <color attach="background" args={['#000000']} />
                 <Suspense fallback={<Loader />}>
                     <HeroModel />
