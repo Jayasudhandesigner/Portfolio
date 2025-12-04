@@ -10,42 +10,61 @@ function HeroModel() {
     // Try to load the model
     let scene
     try {
-        const gltf = useGLTF('/Untitled.glb')
+        const gltf = useGLTF('/Shiv.glb')
         scene = gltf.scene
     } catch (error) {
         console.error('Model loading error:', error)
     }
 
     useFrame(({ mouse, camera }) => {
-        // Light follows cursor position
-        if (lightRef.current) {
-            const vector = new THREE.Vector3(mouse.x * 5, mouse.y * 5, 5)
-            lightRef.current.position.copy(vector)
-        }
+        // Light follows cursor but stays behind the model
+        if (lightRef.current && modelRef.current) {
+            // Get model position
+            const modelPos = modelRef.current.position
 
-        // Subtle rotation on the model
-        if (modelRef.current) {
-            modelRef.current.rotation.y += 0.002
+            // Calculate cursor position in world space
+            const vector = new THREE.Vector3(mouse.x * 3, mouse.y * 3, 0)
+
+            // Position light behind the model (negative Z from model)
+            lightRef.current.position.set(
+                vector.x,
+                vector.y,
+                modelPos.z - 5 // 5 units behind the model
+            )
         }
     })
 
     return (
         <>
             {/* Ambient light for base visibility */}
-            <ambientLight intensity={0.5} />
+            <ambientLight intensity={0.3} />
 
-            {/* Dynamic cursor light */}
-            <pointLight ref={lightRef} intensity={8} distance={40} color="#ffffff" />
+            {/* Dynamic cursor light positioned behind the model */}
+            <pointLight
+                ref={lightRef}
+                intensity={10}
+                distance={50}
+                color="#ffffff"
+                castShadow
+            />
 
-            {/* Additional static lights */}
-            <pointLight position={[10, 10, 10]} intensity={1} />
-            <pointLight position={[-10, -10, -10]} intensity={0.5} />
+            {/* Rim lights from behind */}
+            <pointLight position={[5, 3, -8]} intensity={2} color="#6366f1" />
+            <pointLight position={[-5, -3, -8]} intensity={2} color="#f43f5e" />
 
-            {/* Model or fallback */}
+            {/* Subtle fill light from front */}
+            <pointLight position={[0, 0, 10]} intensity={0.5} color="#ffffff" />
+
+            {/* Model or fallback - positioned close to camera */}
             {scene ? (
-                <primitive ref={modelRef} object={scene} position={[0, -2, 0]} scale={8} />
+                <primitive
+                    ref={modelRef}
+                    object={scene}
+                    position={[0, 0, 0]} // Close to origin, camera is at z=15
+                    scale={8}
+                />
             ) : (
-                <mesh ref={modelRef}>
+                <mesh ref={modelRef} position={[0, 0, 0]}>
                     <boxGeometry args={[2, 2, 2]} />
                     <meshStandardMaterial color="#6366f1" />
                 </mesh>
@@ -85,3 +104,6 @@ export default function HeroSection() {
         </div>
     )
 }
+
+// Preload the model
+useGLTF.preload('/Shiv.glb')
