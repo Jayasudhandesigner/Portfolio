@@ -10,63 +10,60 @@ function HeroModel() {
     // Try to load the model
     let scene
     try {
-        const gltf = useGLTF('/Shiv.glb')
+        const gltf = useGLTF('/models/Shiv.glb')
         scene = gltf.scene
     } catch (error) {
         console.error('Model loading error:', error)
     }
 
     useFrame(({ mouse, camera }) => {
-        // Light follows cursor but stays behind the model
-        if (lightRef.current && modelRef.current) {
-            // Get model position
-            const modelPos = modelRef.current.position
-
-            // Calculate cursor position in world space
-            const vector = new THREE.Vector3(mouse.x * 3, mouse.y * 3, 0)
-
-            // Position light behind the model (negative Z from model)
-            lightRef.current.position.set(
-                vector.x,
-                vector.y,
-                modelPos.z - 5 // 5 units behind the model
+        // Light follows cursor position (same as HTML implementation)
+        if (lightRef.current) {
+            const mouseVector = new THREE.Vector2(
+                mouse.x,
+                mouse.y
             )
+
+            const vector = new THREE.Vector3(mouseVector.x, mouseVector.y, 0.5).unproject(camera)
+            const dir = vector.sub(camera.position).normalize()
+            lightRef.current.position.copy(camera.position.clone().add(dir.multiplyScalar(10)))
         }
+
+        // Optional: Gentle auto-rotation (you can remove if not needed)
+        // if (modelRef.current) {
+        //     modelRef.current.rotation.y += 0.002
+        // }
     })
 
     return (
         <>
-            {/* Ambient light for base visibility */}
-            <ambientLight intensity={0.3} />
+            {/* Ambient light for base visibility - INTENSIFIED */}
+            <ambientLight intensity={1.5} />
 
-            {/* Dynamic cursor light positioned behind the model */}
+            {/* Dynamic cursor light - INTENSIFIED */}
             <pointLight
                 ref={lightRef}
-                intensity={10}
+                intensity={15}
                 distance={50}
                 color="#ffffff"
-                castShadow
             />
 
-            {/* Rim lights from behind */}
-            <pointLight position={[5, 3, -8]} intensity={2} color="#6366f1" />
-            <pointLight position={[-5, -3, -8]} intensity={2} color="#f43f5e" />
+            {/* Additional strong lights to illuminate the model */}
+            <pointLight position={[0, 5, 5]} intensity={5} color="#ffffff" />
 
-            {/* Subtle fill light from front */}
-            <pointLight position={[0, 0, 10]} intensity={0.5} color="#ffffff" />
-
-            {/* Model or fallback - positioned close to camera */}
+            {/* Model or fallback - using exact HTML coordinates */}
             {scene ? (
                 <primitive
                     ref={modelRef}
                     object={scene}
-                    position={[0, 0, 0]} // Close to origin, camera is at z=15
-                    scale={8}
+                    position={[0, -2, 12]}  // Exact position from HTML
+                    scale={10}              // Exact scale from HTML
+                    rotation={[0, 0, 0]}    // Exact rotation from HTML
                 />
             ) : (
-                <mesh ref={modelRef} position={[0, 0, 0]}>
-                    <boxGeometry args={[2, 2, 2]} />
-                    <meshStandardMaterial color="#6366f1" />
+                <mesh ref={modelRef} position={[0, -3, 0]}>
+                    <boxGeometry args={[3, 3, 3]} />
+                    <meshPhongMaterial color="#6366f1" />
                 </mesh>
             )}
         </>
@@ -88,8 +85,9 @@ function Loader() {
 export default function HeroSection() {
     return (
         <div className="canvas-wrapper">
-            <Canvas camera={{ position: [0, 0, 15], fov: 45 }}>
-                <color attach="background" args={['#0a0a0f']} />
+            {/* Using exact camera settings from HTML */}
+            <Canvas camera={{ position: [0, 0, 20], fov: 45 }}>
+                <color attach="background" args={['#000000']} />
                 <Suspense fallback={<Loader />}>
                     <HeroModel />
                 </Suspense>
@@ -106,4 +104,4 @@ export default function HeroSection() {
 }
 
 // Preload the model
-useGLTF.preload('/Shiv.glb')
+useGLTF.preload('/models/Shiv.glb')
