@@ -1,20 +1,13 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
-import { useRef, Suspense } from 'react'
+import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
+import { useRef, Suspense, useState, useEffect } from 'react'
 import * as THREE from 'three'
 
 function HeroModel() {
     const lightRef = useRef()
     const modelRef = useRef()
-
-    // Try to load the model
-    let scene
-    try {
-        const gltf = useGLTF('/models/Shiv.glb')
-        scene = gltf.scene
-    } catch (error) {
-        console.error('Model loading error:', error)
-    }
+    const { scene } = useGLTF('/models/Shiv.glb')
 
     useFrame(({ mouse }) => {
         // Light follows cursor position - simplified for orthographic camera
@@ -26,16 +19,10 @@ function HeroModel() {
                 10             // Position slightly in front of model (model is at z=14)
             )
         }
-
-        // Optional: Gentle auto-rotation (you can remove if not needed)
-        // if (modelRef.current) {
-        //     modelRef.current.rotation.y += 0.002
-        // }
     })
 
     return (
         <>
-
             {/* Dynamic cursor light - INTENSIFIED */}
             <pointLight
                 ref={lightRef}
@@ -45,54 +32,103 @@ function HeroModel() {
             />
 
             {/* Additional strong lights to illuminate the model */}
-            <pointLight position={[0, -2, 12]} intensity={19} color="#085264ff" />
+            <pointLight position={[0, -2, 12]} intensity={25} color="#f59e0b" />
+            <pointLight position={[3, 2, 10]} intensity={15} color="#ea580c" />
+            <pointLight position={[-3, -1, 10]} intensity={10} color="#fbbf24" />
 
-            {/* Model or fallback - using exact HTML coordinates */}
-            {scene ? (
-                <primitive
-                    ref={modelRef}
-                    object={scene}
-                    position={[0, -2, 14]}  // Exact position from HTML
-                    scale={10}              // Exact scale from HTML
-                    rotation={[0, 0, 0]}    // Exact rotation from HTML
-                />
-            ) : (
-                <mesh ref={modelRef} position={[0, -3, 0]}>
-                    <boxGeometry args={[3, 3, 3]} />
-                    <meshPhongMaterial color="#6366f1" />
-                </mesh>
-            )}
+            {/* Model - using exact HTML coordinates */}
+            <primitive
+                ref={modelRef}
+                object={scene}
+                position={[0, -2, 14]}  // Exact position from HTML
+                scale={10}              // Exact scale from HTML
+                rotation={[0, 0, 0]}    // Exact rotation from HTML
+            />
         </>
     )
 }
 
-function Loader() {
+// Post-processing effects component
+function Effects() {
     return (
-        <>
-            <ambientLight intensity={10} />
-        </>
+        <EffectComposer>
+            {/* Bloom/Glow effect */}
+            <Bloom
+                intensity={1.5}           // Glow intensity
+                luminanceThreshold={0.2}  // Brightness threshold for bloom
+                luminanceSmoothing={0.9}  // Smoothness of the bloom
+                mipmapBlur={true}         // High quality blur
+                radius={0.8}              // Spread of the bloom
+            />
+            {/* Vignette for atmospheric edges */}
+            <Vignette
+                offset={0.3}
+                darkness={0.7}
+            />
+        </EffectComposer>
+    )
+}
+
+// Rotating titles component
+function RotatingTitle() {
+    const titles = [
+        'AI Engineer',
+        '3D Artist',
+        'Operations Manager',
+        'AI Automation Engineer'
+    ]
+    const [currentIndex, setCurrentIndex] = useState(0)
+    const [isAnimating, setIsAnimating] = useState(false)
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIsAnimating(true)
+            setTimeout(() => {
+                setCurrentIndex((prev) => (prev + 1) % titles.length)
+                setIsAnimating(false)
+            }, 300)
+        }, 3000)
+
+        return () => clearInterval(interval)
+    }, [titles.length])
+
+    return (
+        <div className={`title text-bloom ${isAnimating ? 'fade-out' : 'fade-in'}`}>
+            {titles[currentIndex]}
+        </div>
     )
 }
 
 export default function HeroSection() {
     return (
-        <div className="canvas-wrapper">
+        <div className="canvas-wrapper hero-section">
             {/* Using orthographic camera */}
             <Canvas
                 orthographic
                 camera={{ position: [0, 0, 20], zoom: 160 }}
+                gl={{
+                    antialias: true,
+                    alpha: false,
+                    powerPreference: 'high-performance'
+                }}
             >
                 <color attach="background" args={['#000000']} />
-                <Suspense fallback={<Loader />}>
+                {/* Add fog for atmospheric depth */}
+                <fog attach="fog" args={['#000', 10, 30]} />
+                <Suspense fallback={null}>
                     <HeroModel />
                 </Suspense>
+
+                {/* Post-processing for glow */}
+                <Effects />
             </Canvas>
 
+            {/* Atmospheric overlays */}
+            <div className="mist-overlay"></div>
+
             <div className="overlay-text">
-                <div className="name">Jayasudhan M</div>
-                <div className="title">
-                    <span className="bold">AI</span> engineer
-                </div>
+                <div className="name text-bloom orange-text">Jayasudhan M</div>
+                <RotatingTitle />
             </div>
         </div>
     )

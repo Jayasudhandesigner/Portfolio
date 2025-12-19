@@ -250,17 +250,6 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-background: rgba(255, 255, 255, 0.1);
-border: 2px solid #fff;
-color: #fff;
-padding: 0.5rem 1rem;
-cursor: pointer;
-transition: all 0.3s ease;
-font-family: 'Montserrat',
-sans-serif;
-text-decoration: none;
-}
-
 .nav-btn:hover {
   background: rgba(255, 255, 255, 0.2);
 }
@@ -312,10 +301,10 @@ text-decoration: none;
 }
 
 .name {
-  font-size: 4rem;
+  font-size: 6rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
 }
 
 .title {
@@ -635,7 +624,9 @@ text-decoration: none;
 .intro-content.visible,
 .scroll-indicator {
   will-change: transform, opacity;
-}/* Intro Section Overlay Styles */
+}
+
+/* Intro Section Overlay Styles */
 .intro-overlay .intro-welcome {
   font-size: 1.5rem;
   font-weight: 300;
@@ -664,7 +655,825 @@ text-decoration: none;
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-  40% { transform: translateX(-50%) translateY(-10px); }
-  60% { transform: translateX(-50%) translateY(-5px); }
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  40% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+
+  60% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+/* ========================================
+   HERO SECTION PRELOADER STYLES
+   ======================================== */
+
+.hero-section {
+  position: relative;
+}
+
+.hero-preloader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, #1a1a2e 0%, #000000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+}
+
+.hero-preloader-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.hero-preloader-content {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animated Rings */
+.hero-preloader-rings {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.hero-ring-1 {
+  width: 100%;
+  height: 100%;
+  border-top-color: #667eea;
+  border-right-color: #667eea;
+  animation: heroSpin 2s linear infinite;
+}
+
+.hero-ring-2 {
+  width: 70%;
+  height: 70%;
+  border-bottom-color: #764ba2;
+  border-left-color: #764ba2;
+  animation: heroSpin 1.5s linear infinite reverse;
+}
+
+.hero-ring-3 {
+  width: 45%;
+  height: 45%;
+  border-top-color: #f093fb;
+  border-right-color: #f093fb;
+  animation: heroSpin 1s linear infinite;
+}
+
+@keyframes heroSpin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Pulsing Center */
+.hero-preloader-center {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-pulse-dot {
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  border-radius: 50%;
+  animation: heroPulse 1.5s ease-in-out infinite;
+  box-shadow:
+    0 0 15px rgba(102, 126, 234, 0.6),
+    0 0 30px rgba(118, 75, 162, 0.4),
+    0 0 45px rgba(240, 147, 251, 0.2);
+}
+
+@keyframes heroPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.4);
+    opacity: 0.7;
+  }
+}
+
+/* Loading Text */
+.hero-preloader-text {
+  position: absolute;
+  bottom: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.hero-loading-text {
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-loading-dots {
+  display: flex;
+}
+
+.hero-loading-dots span {
+  font-size: 1.1rem;
+  color: #667eea;
+  animation: heroDotPulse 1.4s ease-in-out infinite;
+}
+
+.hero-loading-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.hero-loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.hero-loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes heroDotPulse {
+
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+/* Ambient glow effect */
+.hero-preloader::before {
+  content: '';
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: heroAmbientGlow 4s ease-in-out infinite;
+}
+
+@keyframes heroAmbientGlow {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+/* ========================================
+   MUTE BUTTON STYLES
+   ======================================== */
+
+.mute-button {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.mute-button:hover {
+  opacity: 0.8;
+}
+
+.mute-button:active {
+  opacity: 0.6;
+}
+
+.mute-button-inner {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mute-button-inner svg {
+  width: 14px;
+  height: 14px;
+  stroke: rgba(255, 255, 255, 0.7);
+  transition: stroke 0.3s ease;
+}
+
+.mute-button:hover .mute-button-inner svg {
+  stroke: rgba(255, 255, 255, 1);
+}
+
+.mute-button-label {
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.3s ease;
+}
+
+.mute-button:hover .mute-button-label {
+  color: rgba(255, 255, 255, 1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mute-button {
+    bottom: 20px;
+    left: 20px;
+  }
+
+  .mute-button-inner svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .mute-button-label {
+    font-size: 0.6rem;
+  }
+
+  .scroll-discover-hint {
+    font-size: 0.55rem;
+  }
+}
+
+/* Sound Controls Container */
+.sound-controls {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.scroll-discover-hint {
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Update mute button to not be fixed when inside container */
+.sound-controls .mute-button {
+  position: static;
+}
+
+/* ========================================
+   GLOBAL PRELOADER - INDIAN LANGUAGES
+   ======================================== */
+
+.global-preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 1s ease-out, visibility 1s ease-out;
+}
+
+.global-preloader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Background rolling characters */
+.preloader-background-chars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  overflow: hidden;
+}
+
+.char-row {
+  display: flex;
+  gap: 20px;
+  white-space: nowrap;
+  font-size: 3rem;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.char-row.row-left {
+  animation: scrollLeft 30s linear infinite;
+}
+
+.char-row.row-right {
+  animation: scrollRight 25s linear infinite;
+}
+
+.bg-char {
+  color: rgba(245, 158, 11, 0.08);
+  transition: opacity 0.3s ease;
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Center content */
+.preloader-center-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Rolling characters display */
+.rolling-chars-display {
+  display: flex;
+  gap: 8px;
+  font-size: 2rem;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.rolling-chars-display.bottom {
+  margin-top: 20px;
+}
+
+.rolling-char {
+  display: inline-block;
+  animation: charRoll 0.5s ease-in-out infinite alternate;
+  text-shadow: 0 0 10px currentColor;
+}
+
+@keyframes charRoll {
+  0% {
+    transform: translateY(-3px) rotateY(0deg);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translateY(3px) rotateY(180deg);
+    opacity: 1;
+  }
+}
+
+/* Typing name container */
+.typing-name-container {
+  text-align: center;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.typing-name {
+  font-size: 4rem;
+  font-weight: 700;
+  letter-spacing: 12px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.cursor-blink {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: blink 0.8s ease-in-out infinite;
+  margin-left: 5px;
+}
+
+@keyframes blink {
+
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Subtitle with scrambling letters */
+.subtitle-container {
+  margin-top: 10px;
+}
+
+.subtitle-rolling {
+  display: flex;
+  gap: 4px;
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 8px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.subtitle-letter {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.7);
+  animation: letterFlip 0.3s ease-in-out;
+  min-width: 15px;
+  text-align: center;
+}
+
+@keyframes letterFlip {
+  0% {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+/* Indian progress indicator */
+.indian-progress {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.progress-chars {
+  display: flex;
+  gap: 10px;
+}
+
+.progress-char {
+  font-size: 1.8rem;
+  font-family: 'Noto Sans', sans-serif;
+  color: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  text-shadow: none;
+}
+
+.progress-char.active {
+  color: #f59e0b;
+  text-shadow:
+    0 0 10px rgba(245, 158, 11, 0.8),
+    0 0 20px rgba(245, 158, 11, 0.5);
+  transform: scale(1.2);
+}
+
+.progress-percent {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Floating language labels */
+.language-labels {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.lang-label {
+  position: absolute;
+  font-size: 1.5rem;
+  font-family: 'Noto Sans', sans-serif;
+  color: rgba(234, 88, 12, 0.15);
+  animation: floatLabel 6s ease-in-out infinite;
+}
+
+@keyframes floatLabel {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.15;
+  }
+
+  50% {
+    transform: translateY(-20px) scale(1.1);
+    opacity: 0.25;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .typing-name {
+    font-size: 2rem;
+    letter-spacing: 6px;
+  }
+
+  .rolling-chars-display {
+    font-size: 1.5rem;
+  }
+
+  .char-row {
+    font-size: 2rem;
+  }
+
+  .subtitle-rolling {
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+  }
+}
+
+
+/* ========================================
+   ATMOSPHERIC & BLUR EFFECTS
+   ======================================== */
+
+/* Lens blur effect for depth */
+.lens-blur-mild {
+  filter: blur(1px);
+}
+
+.lens-blur-strong {
+  filter: blur(3px);
+}
+
+/* Mist/fog overlay */
+.mist-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%),
+    radial-gradient(ellipse at center top, rgba(102, 126, 234, 0.05) 0%, transparent 50%);
+  z-index: 5;
+}
+
+/* Text glow utilities */
+.text-glow {
+  text-shadow:
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 30px currentColor;
+}
+
+.text-glow-subtle {
+  text-shadow:
+    0 0 5px rgba(255, 255, 255, 0.3),
+    0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+/* Orange text styling */
+.orange-text {
+  color: #f59e0b;
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Bloom text effect - static glow (mean value) */
+.text-bloom {
+  text-shadow:
+    0 0 12px rgba(245, 158, 11, 0.9),
+    0 0 25px rgba(245, 158, 11, 0.7),
+    0 0 45px rgba(234, 88, 12, 0.5),
+    0 0 65px rgba(251, 191, 36, 0.35),
+    0 0 75px rgba(245, 158, 11, 0.25);
+  filter: brightness(1.05);
+}
+
+/* Title fade animations */
+.title.fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease-out;
+}
+
+.title.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease-in;
+}
+
+/* Blur background for sections */
+.blur-backdrop {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Atmospheric vignette */
+.vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.6) 100%);
+  z-index: 4;
+}
+
+/* Hero section atmospheric enhancements */
+.hero-section .overlay-text .name {
+  text-shadow:
+    0 0 20px rgba(255, 255, 255, 0.3),
+    0 0 40px rgba(102, 126, 234, 0.2);
+}
+
+.hero-section .overlay-text .title {
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
+   OPTIMIZED SECTION TRANSITIONS
+   ======================================== */
+
+.transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Main wipe layer - GPU accelerated */
+.transition-wipe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg,
+      rgba(10, 10, 10, 0.95) 0%,
+      rgba(20, 20, 20, 1) 50%,
+      rgba(10, 10, 10, 0.95) 100%);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Scanlines effect - pure CSS, no extra DOM */
+.scanlines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(245, 158, 11, 0.03) 2px,
+      rgba(245, 158, 11, 0.03) 4px);
+  pointer-events: none;
+}
+
+/* Center glow - single element */
+.transition-glow-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  transform: translate3d(-50%, -50%, 0);
+  background: radial-gradient(circle,
+      rgba(245, 158, 11, 0.5) 0%,
+      rgba(234, 88, 12, 0.3) 30%,
+      rgba(251, 191, 36, 0.1) 60%,
+      transparent 80%);
+  border-radius: 50%;
+  filter: blur(40px);
+  backface-visibility: hidden;
+}
+
+/* Lightweight chromatic edges */
+.chromatic-edge {
+  position: absolute;
+  top: 0;
+  width: 80px;
+  height: 100%;
+  pointer-events: none;
+}
+
+.chromatic-left {
+  left: 0;
+  background: linear-gradient(90deg,
+      rgba(255, 100, 50, 0.15) 0%,
+      transparent 100%);
+}
+
+.chromatic-right {
+  right: 0;
+  background: linear-gradient(-90deg,
+      rgba(50, 150, 255, 0.15) 0%,
+      transparent 100%);
+}
+
+/* Section wrapper */
+.section-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Smooth section content transitions */
+.section-wrapper>* {
+  animation: sectionFadeIn 0.4s ease-out;
+}
+
+@keyframes sectionFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }

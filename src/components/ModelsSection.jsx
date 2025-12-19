@@ -58,8 +58,8 @@ function Scene({ currentIndex }) {
 }
 
 export default function ModelsSection() {
-    // FIX: State lifted to component level for proper button interaction
-    const [currentIndex, setCurrentIndex] = useState(0)
+    // Start with the cone (index 1) in the middle
+    const [currentIndex, setCurrentIndex] = useState(1)
 
     const handlePrev = () => {
         setCurrentIndex((prev) => (prev - 1 + 3) % 3)
