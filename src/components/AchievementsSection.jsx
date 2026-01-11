@@ -13,23 +13,22 @@ const achievements = [
     { id: 6, title: "Hackathon Champion", category: "Award", icon: "🥇", color: "#f59e0b" }
 ]
 
-// Cube positioned on ring path
-function OrbitingCubeWithCamera({ angle, selectedAchievement }) {
-    const cubeRef = useRef()
+// Auto Model orbiting on ring path
+function OrbitingAuto({ angle }) {
+    const { scene } = useGLTF('/models/auto.glb')
+    const autoRef = useRef()
     const { camera } = useThree()
 
     // Simplified ring parameters matching CircularPath
-    const offsetRadius = 5.2 // 4 + 1.2
+    const offsetRadius = 5.2
     const y = -1.5
 
-    // Cube position on circular path
+    // Position on circular path
     const cubeX = Math.cos(angle) * offsetRadius
     const cubeZ = Math.sin(angle) * offsetRadius
     const cubeY = y
 
-    const achievement = achievements[selectedAchievement]
-
-    // Camera position: outside the ring, looking at the cube
+    // Camera position
     useFrame(() => {
         const cameraDistance = 6
         const cameraHeight = 1.5
@@ -41,31 +40,25 @@ function OrbitingCubeWithCamera({ angle, selectedAchievement }) {
 
         camera.position.set(camX, camY, camZ)
         camera.lookAt(cubeX, cubeY, cubeZ)
+
+        // Ensure auto faces the direction of travel (tangent)
+        if (autoRef.current) {
+            // Look at next point in orbit
+            autoRef.current.lookAt(
+                Math.cos(angle + 0.1) * offsetRadius,
+                y,
+                Math.sin(angle + 0.1) * offsetRadius
+            )
+        }
     })
 
     return (
         <group position={[cubeX, cubeY, cubeZ]}>
-            {/* Main cube */}
-            <mesh ref={cubeRef}>
-                <boxGeometry args={[0.6, 0.6, 0.6]} />
-                <meshStandardMaterial
-                    color={achievement.color}
-                    emissive={achievement.color}
-                    emissiveIntensity={0.4}
-                    metalness={0.8}
-                    roughness={0.2}
-                />
-            </mesh>
-
-            {/* Subtle glow around cube */}
-            <mesh>
-                <sphereGeometry args={[0.8, 16, 16]} />
-                <meshBasicMaterial
-                    color={achievement.color}
-                    transparent
-                    opacity={0.12}
-                />
-            </mesh>
+            <primitive
+                ref={autoRef}
+                object={scene}
+                scale={0.5}
+            />
         </group>
     )
 }
@@ -84,18 +77,17 @@ function VinayagModel() {
         <primitive
             object={scene}
             scale={8}
-            position={[0, -5.5, 0]}
+            position={[0, -2.5, 0]} // Moved UP slightly from -5.5
             rotation={[0, 0, 0]}
         />
     )
 }
 
-// Circular path indicator
+// CircularPath (unchanged)
 function CircularPath() {
     const points = useMemo(() => {
         const pts = []
         const coneRadius = 4
-        // Adjusted for visual fit around the model
         const y = -1.5
         const offsetRadius = coneRadius + 1.2
 
@@ -121,29 +113,30 @@ function CircularPath() {
     )
 }
 
-// Main 3D Scene - no rotation, static elements
+// Main 3D Scene
 function Scene({ cubeAngle, selectedAchievement }) {
     return (
         <>
             {/* Stary Sky Background */}
             <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 
-            {/* Lighting */}
-            <ambientLight intensity={0.3} />
+            {/* STRONG Lighting */}
+            <ambientLight intensity={1.5} /> {/* Increased base brightness */}
 
             {/* Spotlight for the model */}
             <spotLight
                 position={[0, 15, 10]}
-                angle={0.3}
-                penumbra={1}
-                intensity={5}
+                angle={0.5}
+                penumbra={0.5}
+                intensity={12} // Increased form 5 to 12
                 castShadow
                 shadow-bias={-0.0001}
                 color="#ffaa00"
             />
-            {/* Fill lights */}
-            <pointLight position={[10, 5, 10]} intensity={0.5} color="#f59e0b" />
-            <pointLight position={[-10, 5, -10]} intensity={0.5} color="#8a2be2" />
+            {/* Extra Fill lights */}
+            <pointLight position={[10, 5, 10]} intensity={2} color="#f59e0b" />
+            <pointLight position={[-10, 5, -10]} intensity={2} color="#8a2be2" />
+            <pointLight position={[0, -5, 5]} intensity={3} color="#ffffff" /> {/* Uplight */}
 
             {/* Vinayag Model at center */}
             <VinayagModel />
@@ -152,9 +145,8 @@ function Scene({ cubeAngle, selectedAchievement }) {
             <CircularPath />
 
             {/* Single cube on circumference, camera follows from outside */}
-            <OrbitingCubeWithCamera
+            <OrbitingAuto
                 angle={cubeAngle}
-                selectedAchievement={selectedAchievement}
             />
         </>
     )
@@ -274,4 +266,6 @@ export default function AchievementsSection() {
     )
 }
 
+
 useGLTF.preload('/models/vinayag.glb')
+useGLTF.preload('/models/auto.glb')
