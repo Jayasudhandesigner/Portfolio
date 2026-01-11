@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { useGLTF, Sky, Cloud, Sparkles, Stars } from '@react-three/drei'
 import * as THREE from 'three'
 
 // Achievement data
@@ -12,91 +13,73 @@ const achievements = [
     { id: 6, title: "Hackathon Champion", category: "Award", icon: "🥇", color: "#f59e0b" }
 ]
 
-// Static Cone - no rotation, positioned at center
-function StaticCone() {
+// Vinayag Model
+function VinayagModel() {
+    const { scene } = useGLTF('/models/vinayag.glb')
+    const modelRef = useRef()
+
+    useFrame((state) => {
+        if (modelRef.current) {
+            // Gentle hovering or breathing animation
+            modelRef.current.position.y = -3 + Math.sin(state.clock.elapsedTime * 0.5) * 0.2
+        }
+    })
+
     return (
-        <mesh position={[0, 0, 0]}>
-            <coneGeometry args={[4, 6, 32, 1, true]} />
-            <meshStandardMaterial
-                color="#1a1a2e"
-                wireframe={true}
-                transparent
-                opacity={0.7}
-            />
-        </mesh>
+        <primitive
+            ref={modelRef}
+            object={scene}
+            scale={8}
+            position={[0, -3, 0]}
+            rotation={[0, 0, 0]}
+        />
     )
 }
 
-// Cube positioned on cone's circumference edge
-// Camera follows the cube from outside, looking at cube with cone behind
+// Cube positioned on circumference
 function OrbitingCubeWithCamera({ angle, selectedAchievement }) {
     const cubeRef = useRef()
     const { camera } = useThree()
 
-    // Cone parameters
-    const coneRadius = 4
-    const coneHeight = 6
+    // Orbit parameters
+    const orbitRadius = 6 // Slightly wider than the model
+    const orbitHeight = 0 // Centered vertically relative to camera focus
 
-    // Position cube on the circumference edge with offset from base
-    const heightFromBase = 1.5
-    const y = -coneHeight / 2 + heightFromBase
-
-    // Calculate radius at this height on the cone
-    const normalizedY = (y + coneHeight / 2) / coneHeight
-    const radiusAtHeight = coneRadius * (1 - normalizedY)
-
-    // Add offset away from cone surface
-    const offsetRadius = radiusAtHeight + 1.2
-
-    // Cube position on circular path
-    const cubeX = Math.cos(angle) * offsetRadius
-    const cubeZ = Math.sin(angle) * offsetRadius
-    const cubeY = y
+    // Cube position
+    const cubeX = Math.cos(angle) * orbitRadius
+    const cubeZ = Math.sin(angle) * orbitRadius
+    const cubeY = orbitHeight
 
     const achievement = achievements[selectedAchievement]
 
-    // Camera position: outside the cone, looking at the cube
-    // Camera -> Cube -> Cone (cone is behind the cube from camera's view)
     useFrame(() => {
-        // Camera is positioned further out from the cube, on the same radial line
-        // This way: camera is outside, cube is in middle, cone is behind cube
-        const cameraDistance = 6 // Distance from cube to camera
-        const cameraHeight = 1.5 // Slightly above cube level
+        // Camera follows the cube but stays outside
+        const cameraDistance = 8
+        const cameraHeight = 2
 
-        // Camera on the same radial direction as cube, but further out
-        const cameraRadius = offsetRadius + cameraDistance
+        const cameraRadius = orbitRadius + cameraDistance
         const camX = Math.cos(angle) * cameraRadius
         const camZ = Math.sin(angle) * cameraRadius
         const camY = cubeY + cameraHeight
 
         camera.position.set(camX, camY, camZ)
-        // Look at the cube (which has cone behind it)
-        camera.lookAt(cubeX, cubeY, cubeZ)
+        camera.lookAt(0, 0, 0) // Look at the center (Vinayag)
     })
 
     return (
         <group position={[cubeX, cubeY, cubeZ]}>
-            {/* Main cube */}
             <mesh ref={cubeRef}>
-                <boxGeometry args={[0.6, 0.6, 0.6]} />
+                <boxGeometry args={[0.8, 0.8, 0.8]} />
                 <meshStandardMaterial
                     color={achievement.color}
                     emissive={achievement.color}
-                    emissiveIntensity={0.4}
+                    emissiveIntensity={0.6}
                     metalness={0.8}
                     roughness={0.2}
                 />
             </mesh>
-
-            {/* Subtle glow around cube */}
-            <mesh>
-                <sphereGeometry args={[0.8, 16, 16]} />
-                <meshBasicMaterial
-                    color={achievement.color}
-                    transparent
-                    opacity={0.12}
-                />
-            </mesh>
+            {/* Glow */}
+            <pointLight distance={3} intensity={2} color={achievement.color} />
         </group>
     )
 }
@@ -105,21 +88,10 @@ function OrbitingCubeWithCamera({ angle, selectedAchievement }) {
 function CircularPath() {
     const points = useMemo(() => {
         const pts = []
-        const coneRadius = 4
-        const coneHeight = 6
-        const heightFromBase = 1.5
-        const y = -coneHeight / 2 + heightFromBase
-        const normalizedY = (y + coneHeight / 2) / coneHeight
-        const radiusAtHeight = coneRadius * (1 - normalizedY)
-        const offsetRadius = radiusAtHeight + 1.2
-
+        const radius = 6
         for (let i = 0; i <= 64; i++) {
             const a = (i / 64) * Math.PI * 2
-            pts.push(new THREE.Vector3(
-                Math.cos(a) * offsetRadius,
-                y,
-                Math.sin(a) * offsetRadius
-            ))
+            pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius))
         }
         return pts
     }, [])
@@ -130,28 +102,41 @@ function CircularPath() {
 
     return (
         <line geometry={lineGeometry}>
-            <lineBasicMaterial color="#f59e0b" opacity={0.3} transparent />
+            <lineBasicMaterial color="#ffffff" opacity={0.2} transparent />
         </line>
     )
 }
 
-// Main 3D Scene - no rotation, static elements
+// Main 3D Scene
 function Scene({ cubeAngle, selectedAchievement }) {
     return (
         <>
+            {/* Sky Background */}
+            <Sky sunPosition={[10, 10, -10]} turbidity={0.5} rayleigh={0.5} mieCoefficient={0.005} mieDirectionalG={0.8} />
+            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+
+            {/* Atmospheric Fog/Smoke */}
+            <fog attach="fog" args={['#202030', 5, 30]} />
+
+            {/* Clouds / Smoke Effects */}
+            <Cloud position={[-4, -2, -5]} speed={0.2} opacity={0.5} color="white" />
+            <Cloud position={[4, 2, -10]} speed={0.2} opacity={0.5} color="white" />
+            <Cloud position={[0, 5, -5]} speed={0.2} opacity={0.3} color="white" />
+
+            {/* Sparkles for divine effect */}
+            <Sparkles count={50} scale={10} size={4} speed={0.4} opacity={0.5} color="#ffd700" />
+
             {/* Lighting */}
-            <ambientLight intensity={0.4} />
-            <pointLight position={[0, 5, 0]} intensity={0.8} color="#ffffff" />
-            <pointLight position={[5, 2, 5]} intensity={0.6} color="#f59e0b" />
-            <pointLight position={[-5, 2, -5]} intensity={0.4} color="#8a2be2" />
+            <ambientLight intensity={0.5} />
+            <pointLight position={[10, 10, 10]} intensity={1} color="#f59e0b" />
+            <pointLight position={[-10, 5, 10]} intensity={0.5} color="#8a2be2" />
+            <directionalLight position={[0, 10, 5]} intensity={1} castShadow />
 
-            {/* Single static cone at center */}
-            <StaticCone />
+            {/* The Main Model */}
+            <VinayagModel />
 
-            {/* Circular path the cube follows */}
+            {/* Orbital Elements */}
             <CircularPath />
-
-            {/* Single cube on circumference, camera follows from outside */}
             <OrbitingCubeWithCamera
                 angle={cubeAngle}
                 selectedAchievement={selectedAchievement}
