@@ -84,7 +84,7 @@ function VinayagModel() {
         <primitive
             object={scene}
             scale={8}
-            position={[0, -4, 0]}
+            position={[0, -5.5, 0]}
             rotation={[0, 0, 0]}
         />
     )
