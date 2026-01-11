@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { gsap } from 'gsap'
 import HeroSection from './components/HeroSection'
 import SkillsSection from './components/SkillsSection'
+import AchievementsSection from './components/AchievementsSection'
 import ModelsSection from './components/ModelsSection'
 import ProjectsSection from './components/ProjectsSection'
 import ResumeSection from './components/ResumeSection'
@@ -14,10 +15,11 @@ function AppContent() {
   const [cursorClass, setCursorClass] = useState('')
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const lastMousePos = useRef({ x: 0, y: 0 })
 
-  const { playHover, playClick, playScroll, playTransition } = useSound()
+  const { playHover, playClick, playTransition, playMouseWind } = useSound()
 
-  const sections = ['Home', 'Skills', 'Models', 'Projects', 'Resume']
+  const sections = ['Home', 'Skills', 'Achievements', 'Models', 'Projects', 'Resume']
   const totalSections = sections.length
 
   // Handle section change with simple GSAP animation
@@ -26,7 +28,6 @@ function AppContent() {
 
     setIsTransitioning(true)
     playTransition()
-    playScroll()
 
     // Simple fade transition using GSAP
     const sectionWrapper = document.querySelector('.section-wrapper')
@@ -54,15 +55,65 @@ function AppContent() {
       setCurrentSection(newSection)
       setIsTransitioning(false)
     }
-  }, [currentSection, isTransitioning, playTransition, playScroll])
+  }, [currentSection, isTransitioning, playTransition])
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      setMousePos({ x: e.clientX, y: e.clientY })
+      const newX = e.clientX
+      const newY = e.clientY
+
+      // Calculate mouse speed
+      const dx = newX - lastMousePos.current.x
+      const dy = newY - lastMousePos.current.y
+      const speed = Math.sqrt(dx * dx + dy * dy)
+
+      // Play mellow tune based on speed
+      if (speed > 8) {
+        playMouseWind(speed)
+      }
+
+      lastMousePos.current = { x: newX, y: newY }
+      setMousePos({ x: newX, y: newY })
     }
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
+  }, [playMouseWind])
+
+  // Touch/Swipe support for mobile
+  useEffect(() => {
+    let touchStartY = 0
+    let touchEndY = 0
+    const minSwipeDistance = 50
+
+    const handleTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY
+    }
+
+    const handleTouchEnd = (e) => {
+      if (isTransitioning) return
+
+      touchEndY = e.changedTouches[0].clientY
+      const swipeDistance = touchStartY - touchEndY
+
+      if (Math.abs(swipeDistance) >= minSwipeDistance) {
+        if (swipeDistance > 0) {
+          // Swiped up - go to next section
+          changeSection((currentSection + 1) % totalSections)
+        } else {
+          // Swiped down - go to previous section
+          changeSection((currentSection - 1 + totalSections) % totalSections)
+        }
+      }
+    }
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    window.addEventListener('touchend', handleTouchEnd, { passive: true })
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchend', handleTouchEnd)
+    }
+  }, [totalSections, currentSection, changeSection, isTransitioning])
 
   useEffect(() => {
     let accDelta = 0
@@ -143,38 +194,6 @@ function AppContent() {
         }}
       />
 
-      {/* Navigation */}
-      <nav className="main-nav">
-        <button
-          className="nav-btn"
-          onClick={() => changeSection(0)}
-          onMouseEnter={playHover}
-        >
-          Home
-        </button>
-        <button
-          className="nav-btn"
-          onClick={() => changeSection(1)}
-          onMouseEnter={playHover}
-        >
-          Skills
-        </button>
-        <button
-          className="nav-btn"
-          onClick={() => changeSection(3)}
-          onMouseEnter={playHover}
-        >
-          Projects
-        </button>
-        <button
-          className="nav-btn"
-          onClick={() => changeSection(4)}
-          onMouseEnter={playHover}
-        >
-          Resume
-        </button>
-      </nav>
-
       {/* Section Indicator */}
       <div className="section-indicator">
         {sections.map((_, index) => (
@@ -194,9 +213,10 @@ function AppContent() {
       <div className="section-wrapper">
         {currentSection === 0 && <HeroSection />}
         {currentSection === 1 && <SkillsSection setCursorClass={setCursorClass} />}
-        {currentSection === 2 && <ModelsSection />}
-        {currentSection === 3 && <ProjectsSection />}
-        {currentSection === 4 && <ResumeSection />}
+        {currentSection === 2 && <AchievementsSection />}
+        {currentSection === 3 && <ModelsSection />}
+        {currentSection === 4 && <ProjectsSection />}
+        {currentSection === 5 && <ResumeSection />}
       </div>
     </>
   )
