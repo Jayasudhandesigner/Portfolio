@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, Environment, Lightformer, Stars } from '@react-three/drei'
+import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
 
 // Achievement data
@@ -21,43 +22,62 @@ function OrbitingAuto({ angle }) {
 
     // Simplified ring parameters matching CircularPath
     const offsetRadius = 5.2
-    const y = -1.5
+    const basePathY = -1.5 // Base Y position for the orbit
 
     // Position on circular path
     const cubeX = Math.cos(angle) * offsetRadius
     const cubeZ = Math.sin(angle) * offsetRadius
-    const cubeY = y
 
-    // Camera position
-    useFrame(() => {
+    // Animate Y axis: 0 -> 5 -> 0 -> -5 -> 0 loop relative to base
+    useFrame(({ clock }) => {
+        const time = clock.getElapsedTime()
+        // Sine wave for smooth 0 -> 5 -> 0 -> -5 -> 0
+        // Amplitude 5, speed factor 2 for reasonable speed
+        const yOffset = Math.sin(time * 2) * 5
+        const currentY = basePathY + yOffset
+
+        // Update group position (or mesh position if group is orbit)
+        // Here group is at [cubeX, basePathY, cubeZ]. 
+        // I'll update the group Y to include the offset.
+        if (autoRef.current && autoRef.current.parent) {
+            autoRef.current.parent.position.setY(currentY)
+        }
+
+        // Update camera to follow
         const cameraDistance = 6
         const cameraHeight = 1.5
-
         const cameraRadius = offsetRadius + cameraDistance
+
         const camX = Math.cos(angle) * cameraRadius
         const camZ = Math.sin(angle) * cameraRadius
-        const camY = cubeY + cameraHeight
+        const camY = currentY + cameraHeight
 
         camera.position.set(camX, camY, camZ)
-        camera.lookAt(cubeX, cubeY, cubeZ)
+        camera.lookAt(cubeX, currentY, cubeZ)
 
         // Ensure auto faces the direction of travel (tangent)
         if (autoRef.current) {
             // Look at next point in orbit
             autoRef.current.lookAt(
                 Math.cos(angle + 0.1) * offsetRadius,
-                y,
+                currentY,
                 Math.sin(angle + 0.1) * offsetRadius
             )
+            // "Turn towards its left" - this is a fixed rotation offset
+            // The rotation prop on primitive is applied first, then lookAt.
+            // If the model needs to be rotated *after* lookAt, it's more complex.
+            // Assuming a fixed offset to its forward direction.
+            // The `rotation` prop below handles this.
         }
     })
 
     return (
-        <group position={[cubeX, cubeY, cubeZ]}>
+        <group position={[cubeX, basePathY, cubeZ]}>
             <primitive
                 ref={autoRef}
                 object={scene}
-                scale={0.5}
+                scale={2} // Scaled up 4x from 0.5
+                rotation={[0, Math.PI / 2, 0]} // Rotate towards its left (90 degrees on Y)
             />
         </group>
     )
@@ -148,6 +168,13 @@ function Scene({ cubeAngle, selectedAchievement }) {
             <OrbitingAuto
                 angle={cubeAngle}
             />
+
+            {/* Post Processing for Motion Blur/Bloom */}
+            <EffectComposer>
+                <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} height={300} intensity={0.5} />
+                <Noise opacity={0.02} />
+                <Vignette eskil={false} offset={0.1} darkness={1.1} />
+            </EffectComposer>
         </>
     )
 }
