@@ -42,31 +42,39 @@ function OrbitingAuto({ angle, isMoving }) {
 
         // Lerp amplitude based on isMoving state
         const targetAmp = isMoving ? 1 : 0 // Target normalized amplitude
-        ampRef.current = THREE.MathUtils.lerp(ampRef.current, targetAmp, delta * 2) // Slower lerp for more "ease" in start/stop
+        ampRef.current = THREE.MathUtils.lerp(ampRef.current, targetAmp, delta * 2)
 
-        // Smooth Sine Wave Shifted: 
-        // Range [-1, 1] -> *1.5 -> [-1.5, 1.5] -> -0.5 -> [-2, 1]
-        // This creates a perfectly smooth continuous curve hitting 1 and -2 peaks.
+        // Smooth Sine Wave Shifted
         const sineVal = Math.sin(timeRef.current)
         const shiftedWave = (sineVal * 1.5) - 0.5
 
         const yOffset = shiftedWave * ampRef.current
         const currentY = basePathY + yOffset
 
-        // Manually update Y position of the outer group
         if (posRef.current) {
             posRef.current.position.setY(currentY)
         }
 
-        // PITCH CALCULATION
-        // Pitch follows the derivative (slope) of the Y-motion.
-        // derivative of sin(t) is cos(t).
-        // scale by 30 degrees and amplitude.
-        const pitchDeg = Math.cos(timeRef.current) * 30 * ampRef.current
+        // PHYSICAL TILT CALCULATION (Slope based)
+        // Base Pitch from derivative of motion
+        const basePitchDeg = Math.cos(timeRef.current) * 30
 
-        // Apply rotation directly (as it's now continuous and ampRef is smoothed)
+        // RANDOM SUSPENSION NOISE (Simulate realism)
+        // Use non-harmonic frequencies to simulate randomness
+        const t = timeRef.current
+        const noisePitch = (Math.sin(t * 8.5) * 0.5 + Math.cos(t * 3.2) * 0.5) * 2 // slight X jitter
+        const noiseRoll = (Math.sin(t * 4.2) * 0.5 + Math.cos(t * 6.7) * 0.5) * 3  // slight Z wobble (Roll)
+
+        // Combine base slope + noise, scale by amplitude (motion intensity)
+        const totalPitch = (basePitchDeg + noisePitch) * ampRef.current
+        const totalRoll = noiseRoll * ampRef.current
+
+        // Apply rotations
         if (pitchGroupRef.current) {
-            pitchGroupRef.current.rotation.x = THREE.MathUtils.degToRad(pitchDeg)
+            // Apply Pitch (X-axis)
+            pitchGroupRef.current.rotation.x = THREE.MathUtils.degToRad(totalPitch)
+            // Apply Roll (Z-axis) - simulates uneven terrain/suspension
+            pitchGroupRef.current.rotation.z = THREE.MathUtils.degToRad(totalRoll)
         }
 
         // Update camera to follow
