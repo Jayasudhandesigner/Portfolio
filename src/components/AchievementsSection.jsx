@@ -41,20 +41,16 @@ function OrbitingAuto({ angle, isMoving }) {
         }
 
         // Lerp amplitude based on isMoving state
-        const targetAmp = isMoving ? 2 : 0 // Target amplitude is 2 when moving, 0 when not
-        ampRef.current = THREE.MathUtils.lerp(ampRef.current, targetAmp, delta * 5) // Lerp speed factor
+        const targetAmp = isMoving ? 1 : 0 // Target normalized amplitude
+        ampRef.current = THREE.MathUtils.lerp(ampRef.current, targetAmp, delta * 2) // Slower lerp for more "ease" in start/stop
 
-        // Sine wave for asymmetric 0 -> 1 -> 0 -> -2 -> 0
-        // If positive phase, amplitude 1. If negative phase, amplitude 2.
-        // We normalize by dividing by target max amplitude (2) so ampRef scales it cleanly?
-        // Or simply:
-        const rawWave = Math.sin(timeRef.current)
-        // If ampRef is fully active (approx 2), we want +1 and -2.
-        // So we multiply positive wave by 0.5 * ampRef? (0.5 * 2 = 1)
-        // And negative wave by 1.0 * ampRef? (1.0 * 2 = 2)
-        const wave = rawWave > 0 ? rawWave * 0.5 : rawWave * 1.0
+        // Smooth Sine Wave Shifted: 
+        // Range [-1, 1] -> *1.5 -> [-1.5, 1.5] -> -0.5 -> [-2, 1]
+        // This creates a perfectly smooth continuous curve hitting 1 and -2 peaks.
+        const sineVal = Math.sin(timeRef.current)
+        const shiftedWave = (sineVal * 1.5) - 0.5
 
-        const yOffset = wave * ampRef.current
+        const yOffset = shiftedWave * ampRef.current
         const currentY = basePathY + yOffset
 
         // Manually update Y position of the outer group
@@ -63,19 +59,14 @@ function OrbitingAuto({ angle, isMoving }) {
         }
 
         // PITCH CALCULATION
-        // Rising (cos > 0) -> 30 deg. Falling (cos < 0) -> -30 deg.
-        // Only active if moving (or amplitude > 0.1 to avoid snapping when stopping)
-        const cosT = Math.cos(timeRef.current)
-        const targetPitchDeg = cosT > 0 ? 30 : -30
+        // Pitch follows the derivative (slope) of the Y-motion.
+        // derivative of sin(t) is cos(t).
+        // scale by 30 degrees and amplitude.
+        const pitchDeg = Math.cos(timeRef.current) * 30 * ampRef.current
 
-        // Smoothly dampen pitch if stopping
-        // We can use the same logic as amp: isMoving ? target : 0
-        const activeTargetPitch = isMoving ? targetPitchDeg : 0
-
-        pitchValRef.current = THREE.MathUtils.lerp(pitchValRef.current, activeTargetPitch, delta * 8) // Slightly faster lerp for snap
-
+        // Apply rotation directly (as it's now continuous and ampRef is smoothed)
         if (pitchGroupRef.current) {
-            pitchGroupRef.current.rotation.x = THREE.MathUtils.degToRad(pitchValRef.current)
+            pitchGroupRef.current.rotation.x = THREE.MathUtils.degToRad(pitchDeg)
         }
 
         // Update camera to follow
