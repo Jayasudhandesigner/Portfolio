@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, Environment, Lightformer, Stars } from '@react-three/drei' // Removed Trail
+import { useGLTF, Environment, Lightformer, Sky, Cloud } from '@react-three/drei' // Removed Trail
 import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import { AutoSmoke } from './AutoSmoke' // Import new component
@@ -41,35 +41,47 @@ function OrbitingAuto({ angle, isMoving, carRef }) {
     const cubeX = Math.cos(angle) * offsetRadius
     const cubeZ = Math.sin(angle) * offsetRadius
 
-    // Animate Y axis based on ANGLE (Position on Path)
+    // Animate Y axis: 0 -> 2 -> 0 -> -2 -> 0 loop relative to base
     useFrame((state, delta) => {
-        // Frequency factor relative to angle
-        const t = angle * 5
+        // Only advance time if moving
+        if (isMoving) {
+            timeRef.current += delta * 5 // Speed factor for oscillation
+        }
 
-        // Smooth Sine Wave Shifted -> [1, -2] range
-        const sineVal = Math.sin(t)
+        // Lerp amplitude based on isMoving state
+        const targetAmp = isMoving ? 1 : 0 // Target normalized amplitude
+        ampRef.current = THREE.MathUtils.lerp(ampRef.current, targetAmp, delta * 2)
+
+        // Smooth Sine Wave Shifted
+        const sineVal = Math.sin(timeRef.current)
         const shiftedWave = (sineVal * 1.5) - 0.5
 
-        // Amplitude is always 1 (The path is defined)
-        const currentY = basePathY + shiftedWave
+        const yOffset = shiftedWave * ampRef.current
+        const currentY = basePathY + yOffset
 
         if (posRef.current) {
             posRef.current.position.setY(currentY)
         }
 
         // PHYSICAL TILT CALCULATION (Slope based)
-        const basePitchDeg = Math.cos(t) * 30
+        // Base Pitch from derivative of motion
+        const basePitchDeg = Math.cos(timeRef.current) * 30
 
-        // TERRAIN NOISE (Angle based, so it freezes when stopped)
-        // Use angle-based noise so the "bumps" are part of the terrain
-        const noisePitch = (Math.sin(angle * 12.5) * 0.5 + Math.cos(angle * 23.2) * 0.5) * 2
-        const noiseRoll = (Math.sin(angle * 18.2) * 0.5 + Math.cos(angle * 35.7) * 0.5) * 3
+        // RANDOM SUSPENSION NOISE (Simulate realism)
+        // Use non-harmonic frequencies to simulate randomness
+        const t = timeRef.current
+        const noisePitch = (Math.sin(t * 8.5) * 0.5 + Math.cos(t * 3.2) * 0.5) * 2 // slight X jitter
+        const noiseRoll = (Math.sin(t * 4.2) * 0.5 + Math.cos(t * 6.7) * 0.5) * 3  // slight Z wobble (Roll)
 
-        const totalPitch = basePitchDeg + noisePitch
-        const totalRoll = noiseRoll
+        // Combine base slope + noise, scale by amplitude (motion intensity)
+        const totalPitch = (basePitchDeg + noisePitch) * ampRef.current
+        const totalRoll = noiseRoll * ampRef.current
 
+        // Apply rotations
         if (pitchGroupRef.current) {
+            // Apply Pitch (X-axis)
             pitchGroupRef.current.rotation.x = THREE.MathUtils.degToRad(totalPitch)
+            // Apply Roll (Z-axis) - simulates uneven terrain/suspension
             pitchGroupRef.current.rotation.z = THREE.MathUtils.degToRad(totalRoll)
         }
 
@@ -171,18 +183,24 @@ function Scene({ cubeAngle, selectedAchievement, isMoving }) {
 
     return (
         <>
-            {/* Stary Sky Background */}
-            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+            {/* Blue Sky and Mist Environment */}
+            <color attach="background" args={['#87CEEB']} />
+            <fog attach="fog" args={['#87CEEB', 8, 35]} />
+            <Sky sunPosition={[100, 20, 100]} turbidity={5} rayleigh={0.5} />
+
+            {/* Mist Clouds */}
+            <Cloud position={[0, -5, 0]} opacity={0.3} speed={0.2} width={20} depth={5} segments={10} color="#ffffff" />
+            <Cloud position={[0, 5, -10]} opacity={0.3} speed={0.2} width={20} depth={5} segments={10} color="#ffffff" />
 
             {/* STRONG Lighting */}
-            <ambientLight intensity={1.5} /> {/* Increased base brightness */}
+            <ambientLight intensity={1.5} />
 
             {/* Spotlight for the model */}
             <spotLight
                 position={[0, 15, 10]}
                 angle={0.5}
                 penumbra={0.5}
-                intensity={12} // Increased form 5 to 12
+                intensity={12}
                 castShadow
                 shadow-bias={-0.0001}
                 color="#ffaa00"
@@ -190,7 +208,7 @@ function Scene({ cubeAngle, selectedAchievement, isMoving }) {
             {/* Extra Fill lights */}
             <pointLight position={[10, 5, 10]} intensity={2} color="#f59e0b" />
             <pointLight position={[-10, 5, -10]} intensity={2} color="#8a2be2" />
-            <pointLight position={[0, -5, 5]} intensity={3} color="#ffffff" /> {/* Uplight */}
+            <pointLight position={[0, -5, 5]} intensity={3} color="#ffffff" />
 
             {/* Vinayag Model at center */}
             <VinayagModel />
