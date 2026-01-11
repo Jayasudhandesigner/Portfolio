@@ -41,47 +41,35 @@ function OrbitingAuto({ angle, isMoving, carRef }) {
     const cubeX = Math.cos(angle) * offsetRadius
     const cubeZ = Math.sin(angle) * offsetRadius
 
-    // Animate Y axis: 0 -> 2 -> 0 -> -2 -> 0 loop relative to base
+    // Animate Y axis based on ANGLE (Position on Path)
     useFrame((state, delta) => {
-        // Only advance time if moving
-        if (isMoving) {
-            timeRef.current += delta * 5 // Speed factor for oscillation
-        }
+        // Frequency factor relative to angle
+        const t = angle * 5
 
-        // Lerp amplitude based on isMoving state
-        const targetAmp = isMoving ? 1 : 0 // Target normalized amplitude
-        ampRef.current = THREE.MathUtils.lerp(ampRef.current, targetAmp, delta * 2)
-
-        // Smooth Sine Wave Shifted
-        const sineVal = Math.sin(timeRef.current)
+        // Smooth Sine Wave Shifted -> [1, -2] range
+        const sineVal = Math.sin(t)
         const shiftedWave = (sineVal * 1.5) - 0.5
 
-        const yOffset = shiftedWave * ampRef.current
-        const currentY = basePathY + yOffset
+        // Amplitude is always 1 (The path is defined)
+        const currentY = basePathY + shiftedWave
 
         if (posRef.current) {
             posRef.current.position.setY(currentY)
         }
 
         // PHYSICAL TILT CALCULATION (Slope based)
-        // Base Pitch from derivative of motion
-        const basePitchDeg = Math.cos(timeRef.current) * 30
+        const basePitchDeg = Math.cos(t) * 30
 
-        // RANDOM SUSPENSION NOISE (Simulate realism)
-        // Use non-harmonic frequencies to simulate randomness
-        const t = timeRef.current
-        const noisePitch = (Math.sin(t * 8.5) * 0.5 + Math.cos(t * 3.2) * 0.5) * 2 // slight X jitter
-        const noiseRoll = (Math.sin(t * 4.2) * 0.5 + Math.cos(t * 6.7) * 0.5) * 3  // slight Z wobble (Roll)
+        // TERRAIN NOISE (Angle based, so it freezes when stopped)
+        // Use angle-based noise so the "bumps" are part of the terrain
+        const noisePitch = (Math.sin(angle * 12.5) * 0.5 + Math.cos(angle * 23.2) * 0.5) * 2
+        const noiseRoll = (Math.sin(angle * 18.2) * 0.5 + Math.cos(angle * 35.7) * 0.5) * 3
 
-        // Combine base slope + noise, scale by amplitude (motion intensity)
-        const totalPitch = (basePitchDeg + noisePitch) * ampRef.current
-        const totalRoll = noiseRoll * ampRef.current
+        const totalPitch = basePitchDeg + noisePitch
+        const totalRoll = noiseRoll
 
-        // Apply rotations
         if (pitchGroupRef.current) {
-            // Apply Pitch (X-axis)
             pitchGroupRef.current.rotation.x = THREE.MathUtils.degToRad(totalPitch)
-            // Apply Roll (Z-axis) - simulates uneven terrain/suspension
             pitchGroupRef.current.rotation.z = THREE.MathUtils.degToRad(totalRoll)
         }
 
