@@ -42,8 +42,17 @@ function OrbitingAuto({ angle, isMoving }) {
         const targetAmp = isMoving ? 2 : 0 // Target amplitude is 2 when moving, 0 when not
         ampRef.current = THREE.MathUtils.lerp(ampRef.current, targetAmp, delta * 5) // Lerp speed factor
 
-        // Sine wave for smooth 0 -> 2 -> 0 -> -2 -> 0
-        const yOffset = Math.sin(timeRef.current) * ampRef.current
+        // Sine wave for asymmetric 0 -> 1 -> 0 -> -2 -> 0
+        // If positive phase, amplitude 1. If negative phase, amplitude 2.
+        // We normalize by dividing by target max amplitude (2) so ampRef scales it cleanly?
+        // Or simply:
+        const rawWave = Math.sin(timeRef.current)
+        // If ampRef is fully active (approx 2), we want +1 and -2.
+        // So we multiply positive wave by 0.5 * ampRef? (0.5 * 2 = 1)
+        // And negative wave by 1.0 * ampRef? (1.0 * 2 = 2)
+        const wave = rawWave > 0 ? rawWave * 0.5 : rawWave * 1.0
+
+        const yOffset = wave * ampRef.current
         const currentY = basePathY + yOffset
 
         // Manually update Y position of the outer group
