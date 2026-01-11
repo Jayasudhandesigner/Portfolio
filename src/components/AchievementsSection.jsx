@@ -17,10 +17,12 @@ const achievements = [
 // Auto Model orbiting on ring path
 function OrbitingAuto({ angle, isMoving }) {
     const { scene } = useGLTF('/models/auto.glb')
-    const orientRef = useRef() // Ref for the group that handles orientation (lookAt)
+    const orientRef = useRef() // Ref for the group that handles orientation (Heading/Yaw)
     const posRef = useRef()    // Ref for the group that handles position (Y animation)
-    const timeRef = useRef(0) // Track animation time manually for sine wave phase
-    const ampRef = useRef(0)  // Track current amplitude for smooth start/stop
+    const pitchGroupRef = useRef() // Ref for pitch rotation (X-axis)
+    const timeRef = useRef(0)
+    const ampRef = useRef(0)
+    const pitchValRef = useRef(0) // Track linear pitch value for lerping
     const { camera } = useThree()
 
     // Simplified ring parameters matching CircularPath
@@ -60,6 +62,22 @@ function OrbitingAuto({ angle, isMoving }) {
             posRef.current.position.setY(currentY)
         }
 
+        // PITCH CALCULATION
+        // Rising (cos > 0) -> 30 deg. Falling (cos < 0) -> -30 deg.
+        // Only active if moving (or amplitude > 0.1 to avoid snapping when stopping)
+        const cosT = Math.cos(timeRef.current)
+        const targetPitchDeg = cosT > 0 ? 30 : -30
+
+        // Smoothly dampen pitch if stopping
+        // We can use the same logic as amp: isMoving ? target : 0
+        const activeTargetPitch = isMoving ? targetPitchDeg : 0
+
+        pitchValRef.current = THREE.MathUtils.lerp(pitchValRef.current, activeTargetPitch, delta * 8) // Slightly faster lerp for snap
+
+        if (pitchGroupRef.current) {
+            pitchGroupRef.current.rotation.x = THREE.MathUtils.degToRad(pitchValRef.current)
+        }
+
         // Update camera to follow
         const cameraDistance = 6
         const cameraHeight = 1.5
@@ -89,11 +107,14 @@ function OrbitingAuto({ angle, isMoving }) {
         <group ref={posRef} position={[cubeX, basePathY, cubeZ]}>
             {/* Inner group for orientation, lookAt is applied here */}
             <group ref={orientRef}>
-                <primitive
-                    object={scene}
-                    scale={2} // Scaled up 4x from 0.5
-                    rotation={[0, Math.PI / 2, 0]} // Rotate the model itself to face "left" relative to its forward direction
-                />
+                {/* Inner group for Pitch (X-axis rotation) */}
+                <group ref={pitchGroupRef}>
+                    <primitive
+                        object={scene}
+                        scale={2} // Scaled up 4x from 0.5
+                        rotation={[0, Math.PI / 2, 0]} // Rotate the model itself to face "left" relative to its forward direction
+                    />
+                </group>
             </group>
         </group>
     )
