@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, Sky, Cloud, Sparkles, Stars } from '@react-three/drei'
+import { useGLTF, Environment, Lightformer, Stars } from '@react-three/drei'
 import * as THREE from 'three'
 
 // Achievement data
@@ -13,74 +13,73 @@ const achievements = [
     { id: 6, title: "Hackathon Champion", category: "Award", icon: "🥇", color: "#f59e0b" }
 ]
 
-// Vinayag Model
-function VinayagModel() {
-    const { scene } = useGLTF('/models/vinayag.glb')
-    const modelRef = useRef()
-
-    useFrame((state) => {
-        if (modelRef.current) {
-            // Gentle hovering or breathing animation
-            modelRef.current.position.y = -3 + Math.sin(state.clock.elapsedTime * 0.5) * 0.2
-        }
-    })
-
-    return (
-        <primitive
-            ref={modelRef}
-            object={scene}
-            scale={8}
-            position={[0, -3, 0]}
-            rotation={[0, 0, 0]}
-        />
-    )
-}
-
-// Cube positioned on circumference
+// Cube positioned on ring path
 function OrbitingCubeWithCamera({ angle, selectedAchievement }) {
     const cubeRef = useRef()
     const { camera } = useThree()
 
-    // Orbit parameters
-    const orbitRadius = 6 // Slightly wider than the model
-    const orbitHeight = 0 // Centered vertically relative to camera focus
+    // Simplified ring parameters matching CircularPath
+    const offsetRadius = 5.2 // 4 + 1.2
+    const y = -1.5
 
-    // Cube position
-    const cubeX = Math.cos(angle) * orbitRadius
-    const cubeZ = Math.sin(angle) * orbitRadius
-    const cubeY = orbitHeight
+    // Cube position on circular path
+    const cubeX = Math.cos(angle) * offsetRadius
+    const cubeZ = Math.sin(angle) * offsetRadius
+    const cubeY = y
 
     const achievement = achievements[selectedAchievement]
 
+    // Camera position: outside the ring, looking at the cube
     useFrame(() => {
-        // Camera follows the cube but stays outside
-        const cameraDistance = 8
-        const cameraHeight = 2
+        const cameraDistance = 6
+        const cameraHeight = 1.5
 
-        const cameraRadius = orbitRadius + cameraDistance
+        const cameraRadius = offsetRadius + cameraDistance
         const camX = Math.cos(angle) * cameraRadius
         const camZ = Math.sin(angle) * cameraRadius
         const camY = cubeY + cameraHeight
 
         camera.position.set(camX, camY, camZ)
-        camera.lookAt(0, 0, 0) // Look at the center (Vinayag)
+        camera.lookAt(cubeX, cubeY, cubeZ)
     })
 
     return (
         <group position={[cubeX, cubeY, cubeZ]}>
+            {/* Main cube */}
             <mesh ref={cubeRef}>
-                <boxGeometry args={[0.8, 0.8, 0.8]} />
+                <boxGeometry args={[0.6, 0.6, 0.6]} />
                 <meshStandardMaterial
                     color={achievement.color}
                     emissive={achievement.color}
-                    emissiveIntensity={0.6}
+                    emissiveIntensity={0.4}
                     metalness={0.8}
                     roughness={0.2}
                 />
             </mesh>
-            {/* Glow */}
-            <pointLight distance={3} intensity={2} color={achievement.color} />
+
+            {/* Subtle glow around cube */}
+            <mesh>
+                <sphereGeometry args={[0.8, 16, 16]} />
+                <meshBasicMaterial
+                    color={achievement.color}
+                    transparent
+                    opacity={0.12}
+                />
+            </mesh>
         </group>
+    )
+}
+
+// Vinayag Model at center
+function VinayagModel() {
+    const { scene } = useGLTF('/models/vinayag.glb')
+    return (
+        <primitive
+            object={scene}
+            scale={5}
+            position={[0, -3, 0]}
+            rotation={[0, 0, 0]}
+        />
     )
 }
 
@@ -88,10 +87,18 @@ function OrbitingCubeWithCamera({ angle, selectedAchievement }) {
 function CircularPath() {
     const points = useMemo(() => {
         const pts = []
-        const radius = 6
+        const coneRadius = 4
+        // Adjusted for visual fit around the model
+        const y = -1.5
+        const offsetRadius = coneRadius + 1.2
+
         for (let i = 0; i <= 64; i++) {
             const a = (i / 64) * Math.PI * 2
-            pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius))
+            pts.push(new THREE.Vector3(
+                Math.cos(a) * offsetRadius,
+                y,
+                Math.sin(a) * offsetRadius
+            ))
         }
         return pts
     }, [])
@@ -102,41 +109,31 @@ function CircularPath() {
 
     return (
         <line geometry={lineGeometry}>
-            <lineBasicMaterial color="#ffffff" opacity={0.2} transparent />
+            <lineBasicMaterial color="#f59e0b" opacity={0.3} transparent />
         </line>
     )
 }
 
-// Main 3D Scene
+// Main 3D Scene - no rotation, static elements
 function Scene({ cubeAngle, selectedAchievement }) {
     return (
         <>
-            {/* Sky Background */}
-            <Sky sunPosition={[10, 10, -10]} turbidity={0.5} rayleigh={0.5} mieCoefficient={0.005} mieDirectionalG={0.8} />
+            {/* Stary Sky Background */}
             <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-
-            {/* Atmospheric Fog/Smoke */}
-            <fog attach="fog" args={['#202030', 5, 30]} />
-
-            {/* Clouds / Smoke Effects */}
-            <Cloud position={[-4, -2, -5]} speed={0.2} opacity={0.5} color="white" />
-            <Cloud position={[4, 2, -10]} speed={0.2} opacity={0.5} color="white" />
-            <Cloud position={[0, 5, -5]} speed={0.2} opacity={0.3} color="white" />
-
-            {/* Sparkles for divine effect */}
-            <Sparkles count={50} scale={10} size={4} speed={0.4} opacity={0.5} color="#ffd700" />
 
             {/* Lighting */}
             <ambientLight intensity={0.5} />
-            <pointLight position={[10, 10, 10]} intensity={1} color="#f59e0b" />
-            <pointLight position={[-10, 5, 10]} intensity={0.5} color="#8a2be2" />
-            <directionalLight position={[0, 10, 5]} intensity={1} castShadow />
+            <pointLight position={[0, 10, 0]} intensity={1.5} color="#ffffff" />
+            <pointLight position={[10, 5, 10]} intensity={1} color="#f59e0b" />
+            <pointLight position={[-10, 5, -10]} intensity={0.8} color="#8a2be2" />
 
-            {/* The Main Model */}
+            {/* Vinayag Model at center */}
             <VinayagModel />
 
-            {/* Orbital Elements */}
+            {/* Circular path the cube follows */}
             <CircularPath />
+
+            {/* Single cube on circumference, camera follows from outside */}
             <OrbitingCubeWithCamera
                 angle={cubeAngle}
                 selectedAchievement={selectedAchievement}
@@ -258,3 +255,5 @@ export default function AchievementsSection() {
         </div>
     )
 }
+
+useGLTF.preload('/models/vinayag.glb')
