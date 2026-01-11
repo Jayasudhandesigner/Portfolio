@@ -186,7 +186,6 @@ function Scene({ cubeAngle, selectedAchievement, isMoving }) {
             {/* Blue Sky and Mist Environment */}
             <color attach="background" args={['#87CEEB']} />
             <fog attach="fog" args={['#87CEEB', 8, 35]} />
-            <Sky sunPosition={[100, 20, 100]} turbidity={5} rayleigh={0.5} />
 
             {/* Mist Clouds */}
             <Cloud position={[0, -5, 0]} opacity={0.3} speed={0.2} width={20} depth={5} segments={10} color="#ffffff" />
