@@ -200,14 +200,12 @@ function AppContent() {
 
   return (
     <>
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '0px', zIndex: 100 }}>
-        <StaggeredMenu
-          items={menuItems}
-          socialItems={socialItems}
-          logoUrl="" // Or path to logo
-          onItemClick={(item) => changeSection(item.index)}
-        />
-      </div>
+      <StaggeredMenu
+        isFixed={true}
+        items={menuItems}
+        socialItems={socialItems}
+        onItemClick={(item) => changeSection(item.index)}
+      />
 
       {/* Custom Cursor */}
       <div
