@@ -15,32 +15,40 @@ const achievements = [
 ]
 
 // Auto Model orbiting on ring path
-function OrbitingAuto({ angle }) {
+function OrbitingAuto({ angle, isMoving }) {
     const { scene } = useGLTF('/models/auto.glb')
-    const autoRef = useRef()
+    const orientRef = useRef() // Ref for the group that handles orientation (lookAt)
+    const posRef = useRef()    // Ref for the group that handles position (Y animation)
+    const timeRef = useRef(0) // Track animation time manually for sine wave phase
+    const ampRef = useRef(0)  // Track current amplitude for smooth start/stop
     const { camera } = useThree()
 
     // Simplified ring parameters matching CircularPath
     const offsetRadius = 5.2
     const basePathY = -1.5 // Base Y position for the orbit
 
-    // Position on circular path
+    // Position on circular path (X and Z are handled by React props, Y is animated)
     const cubeX = Math.cos(angle) * offsetRadius
     const cubeZ = Math.sin(angle) * offsetRadius
 
-    // Animate Y axis: 0 -> 5 -> 0 -> -5 -> 0 loop relative to base
-    useFrame(({ clock }) => {
-        const time = clock.getElapsedTime()
-        // Sine wave for smooth 0 -> 5 -> 0 -> -5 -> 0
-        // Amplitude 5, speed factor 2 for reasonable speed
-        const yOffset = Math.sin(time * 2) * 5
+    // Animate Y axis: 0 -> 2 -> 0 -> -2 -> 0 loop relative to base
+    useFrame((state, delta) => {
+        // Only advance time if moving
+        if (isMoving) {
+            timeRef.current += delta * 5 // Speed factor for oscillation
+        }
+
+        // Lerp amplitude based on isMoving state
+        const targetAmp = isMoving ? 2 : 0 // Target amplitude is 2 when moving, 0 when not
+        ampRef.current = THREE.MathUtils.lerp(ampRef.current, targetAmp, delta * 5) // Lerp speed factor
+
+        // Sine wave for smooth 0 -> 2 -> 0 -> -2 -> 0
+        const yOffset = Math.sin(timeRef.current) * ampRef.current
         const currentY = basePathY + yOffset
 
-        // Update group position (or mesh position if group is orbit)
-        // Here group is at [cubeX, basePathY, cubeZ]. 
-        // I'll update the group Y to include the offset.
-        if (autoRef.current && autoRef.current.parent) {
-            autoRef.current.parent.position.setY(currentY)
+        // Manually update Y position of the outer group
+        if (posRef.current) {
+            posRef.current.position.setY(currentY)
         }
 
         // Update camera to follow
@@ -50,35 +58,34 @@ function OrbitingAuto({ angle }) {
 
         const camX = Math.cos(angle) * cameraRadius
         const camZ = Math.sin(angle) * cameraRadius
-        const camY = currentY + cameraHeight
+        const camY = currentY + cameraHeight // Camera follows the car's animated height
 
         camera.position.set(camX, camY, camZ)
-        camera.lookAt(cubeX, currentY, cubeZ)
+        camera.lookAt(cubeX, currentY, cubeZ) // Camera looks at the car's current position
 
         // Ensure auto faces the direction of travel (tangent)
-        if (autoRef.current) {
-            // Look at next point in orbit
-            autoRef.current.lookAt(
+        if (orientRef.current) {
+            // Look at next point in orbit (in world coordinates)
+            // The target Y is the currentY of the car to keep it level with its path
+            orientRef.current.lookAt(
                 Math.cos(angle + 0.1) * offsetRadius,
                 currentY,
                 Math.sin(angle + 0.1) * offsetRadius
             )
-            // "Turn towards its left" - this is a fixed rotation offset
-            // The rotation prop on primitive is applied first, then lookAt.
-            // If the model needs to be rotated *after* lookAt, it's more complex.
-            // Assuming a fixed offset to its forward direction.
-            // The `rotation` prop below handles this.
         }
     })
 
     return (
-        <group position={[cubeX, basePathY, cubeZ]}>
-            <primitive
-                ref={autoRef}
-                object={scene}
-                scale={2} // Scaled up 4x from 0.5
-                rotation={[0, Math.PI / 2, 0]} // Rotate towards its left (90 degrees on Y)
-            />
+        // Outer group for position, X and Z are set by props, Y is animated in useFrame
+        <group ref={posRef} position={[cubeX, basePathY, cubeZ]}>
+            {/* Inner group for orientation, lookAt is applied here */}
+            <group ref={orientRef}>
+                <primitive
+                    object={scene}
+                    scale={2} // Scaled up 4x from 0.5
+                    rotation={[0, Math.PI / 2, 0]} // Rotate the model itself to face "left" relative to its forward direction
+                />
+            </group>
         </group>
     )
 }
@@ -134,7 +141,7 @@ function CircularPath() {
 }
 
 // Main 3D Scene
-function Scene({ cubeAngle, selectedAchievement }) {
+function Scene({ cubeAngle, selectedAchievement, isMoving }) {
     return (
         <>
             {/* Stary Sky Background */}
@@ -167,6 +174,7 @@ function Scene({ cubeAngle, selectedAchievement }) {
             {/* Single cube on circumference, camera follows from outside */}
             <OrbitingAuto
                 angle={cubeAngle}
+                isMoving={isMoving}
             />
 
             {/* Post Processing for Motion Blur/Bloom */}
@@ -240,6 +248,8 @@ export default function AchievementsSection() {
 
     const currentAchievement = achievements[selectedAchievement]
 
+    const isMoving = keysPressed.left || keysPressed.right
+
     return (
         <div className="achievements-3d-section">
             {/* 3D Canvas */}
@@ -251,6 +261,7 @@ export default function AchievementsSection() {
                     <Scene
                         cubeAngle={cubeAngle}
                         selectedAchievement={selectedAchievement}
+                        isMoving={isMoving}
                     />
                 </Canvas>
             </div>
