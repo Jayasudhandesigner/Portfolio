@@ -73,11 +73,18 @@ function OrbitingCubeWithCamera({ angle, selectedAchievement }) {
 // Vinayag Model at center
 function VinayagModel() {
     const { scene } = useGLTF('/models/vinayag.glb')
+    // Enable shadows for the model
+    scene.traverse((child) => {
+        if (child.isMesh) {
+            child.castShadow = true
+            child.receiveShadow = true
+        }
+    })
     return (
         <primitive
             object={scene}
-            scale={5}
-            position={[0, -3, 0]}
+            scale={8}
+            position={[0, -4, 0]}
             rotation={[0, 0, 0]}
         />
     )
@@ -122,10 +129,21 @@ function Scene({ cubeAngle, selectedAchievement }) {
             <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 
             {/* Lighting */}
-            <ambientLight intensity={0.5} />
-            <pointLight position={[0, 10, 0]} intensity={1.5} color="#ffffff" />
-            <pointLight position={[10, 5, 10]} intensity={1} color="#f59e0b" />
-            <pointLight position={[-10, 5, -10]} intensity={0.8} color="#8a2be2" />
+            <ambientLight intensity={0.3} />
+
+            {/* Spotlight for the model */}
+            <spotLight
+                position={[0, 15, 10]}
+                angle={0.3}
+                penumbra={1}
+                intensity={5}
+                castShadow
+                shadow-bias={-0.0001}
+                color="#ffaa00"
+            />
+            {/* Fill lights */}
+            <pointLight position={[10, 5, 10]} intensity={0.5} color="#f59e0b" />
+            <pointLight position={[-10, 5, -10]} intensity={0.5} color="#8a2be2" />
 
             {/* Vinayag Model at center */}
             <VinayagModel />
