@@ -3,6 +3,7 @@ import { useGLTF } from '@react-three/drei'
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import { useRef, Suspense, useState, useEffect } from 'react'
 import * as THREE from 'three'
+import LightRays from './LightRays/LightRays'
 
 function HeroModel() {
     const lightRef = useRef()
@@ -101,19 +102,48 @@ function RotatingTitle() {
 
 export default function HeroSection() {
     return (
-        <div className="canvas-wrapper hero-section">
+        <div className="canvas-wrapper hero-section" style={{ position: 'relative', background: '#000' }}>
+            {/* Light Rays Background */}
+            <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '1080px',
+                height: '1080px',
+                zIndex: 0,
+                pointerEvents: 'none',
+                overflow: 'hidden'
+            }}>
+                <LightRays
+                    raysOrigin="top-center"
+                    raysColor="#ffffff"
+                    raysSpeed={0.8}
+                    lightSpread={2.7}
+                    rayLength={4}
+                    pulsating
+                    fadeDistance={1.5}
+                    saturation={1}
+                    followMouse
+                    mouseInfluence={0.4}
+                    noiseAmount={0.45}
+                    distortion={0.05}
+                />
+            </div>
+
             {/* Using orthographic camera */}
             <Canvas
                 orthographic
                 camera={{ position: [0, 0, 20], zoom: 160 }}
                 gl={{
                     antialias: true,
-                    alpha: false,
+                    alpha: true, // Enable transparency
                     powerPreference: 'high-performance'
                 }}
+                style={{ position: 'relative', zIndex: 1 }}
             >
-                <color attach="background" args={['#000000']} />
-                {/* Add fog for atmospheric depth */}
+                {/* Removed background color to show rays details */}
+                {/* Add fog for atmospheric depth - fades to black matching bg */}
                 <fog attach="fog" args={['#000', 10, 30]} />
                 <Suspense fallback={null}>
                     <HeroModel />
@@ -124,9 +154,9 @@ export default function HeroSection() {
             </Canvas>
 
             {/* Atmospheric overlays */}
-            <div className="mist-overlay"></div>
+            <div className="mist-overlay" style={{ zIndex: 2 }}></div>
 
-            <div className="overlay-text">
+            <div className="overlay-text" style={{ zIndex: 3 }}>
                 <div className="name text-bloom orange-text">Jayasudhan M</div>
                 <RotatingTitle />
             </div>
