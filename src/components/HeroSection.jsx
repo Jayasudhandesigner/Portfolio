@@ -72,10 +72,10 @@ function Effects() {
 // Rotating titles component
 function RotatingTitle() {
     const titles = [
-        'AI Engineer',
-        '3D Artist',
-        'Operations Manager',
-        'AI Automation Engineer'
+        'AI Ops Engineer',
+        'MLOps Engineer',
+        'Production AI Systems',
+        'Generative AI Professional'
     ]
     const [currentIndex, setCurrentIndex] = useState(0)
     const [isAnimating, setIsAnimating] = useState(false)

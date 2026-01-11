@@ -27,8 +27,36 @@ export default function SkillsSection({ setCursorClass }) {
                     <Lightformer intensity={10} color="white" position={[-10, 0, 14]} rotation={[0, Math.PI / 2, Math.PI / 3]} scale={[100, 10, 1]} />
                 </Environment>
             </Canvas>
-            <div className="cards-title">MY SKILLS</div>
-            <div className="cards-hint">✦ Click & Drag the Tags ✦</div>
+            <div className="cards-title">TECHNICAL SKILLS</div>
+            <div className="skills-overlay" style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '80%',
+                display: 'flex',
+                justifyContent: 'space-between',
+                pointerEvents: 'none',
+                color: '#fff',
+                fontFamily: 'Inter, sans-serif'
+            }}>
+                <div style={{ textAlign: 'left', maxWidth: '300px' }}>
+                    <h3 style={{ borderBottom: '2px solid #f59e0b', paddingBottom: '0.5rem', marginBottom: '1rem' }}>AI Ops & MLOps</h3>
+                    <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>Model deployment, CI/CD for ML, Experiment Tracking, Drift Awareness</p>
+
+                    <h3 style={{ borderBottom: '2px solid #f59e0b', paddingBottom: '0.5rem', marginBottom: '1rem', marginTop: '2rem' }}>Cloud & DevOps</h3>
+                    <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>Docker, Kubernetes, AWS (EC2, S3), OCI, GitHub Actions, Terraform</p>
+                </div>
+
+                <div style={{ textAlign: 'right', maxWidth: '300px' }}>
+                    <h3 style={{ borderBottom: '2px solid #8a2be2', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Backend & AI</h3>
+                    <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>Python, FastAPI, Scikit-learn, NLP, RAG, LLM Orchestration</p>
+
+                    <h3 style={{ borderBottom: '2px solid #8a2be2', paddingBottom: '0.5rem', marginBottom: '1rem', marginTop: '2rem' }}>Governance</h3>
+                    <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>GenAI governance, Policy enforcement, Workflow automation</p>
+                </div>
+            </div>
+            <div className="cards-hint">✦ Interactive Physics Demo ✦</div>
         </div>
     )
 }

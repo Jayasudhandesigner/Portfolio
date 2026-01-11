@@ -4,12 +4,12 @@ import * as THREE from 'three'
 
 // Achievement data
 const achievements = [
-    { id: 1, title: "AI Innovation Award", category: "Award", icon: "🏆", color: "#ffd700" },
-    { id: 2, title: "Hackathon Champion", category: "Competition", icon: "🥇", color: "#ff4500" },
-    { id: 3, title: "Research Publication", category: "Academic", icon: "📚", color: "#4682b4" },
-    { id: 4, title: "Open Source Contributor", category: "Community", icon: "🌐", color: "#32cd32" },
-    { id: 5, title: "Tech Speaker", category: "Speaking", icon: "🎤", color: "#8a2be2" },
-    { id: 6, title: "Project Excellence", category: "Project", icon: "🚀", color: "#f59e0b" }
+    { id: 1, title: "MLOps Platform", category: "Project", icon: "🚀", color: "#ffd700" },
+    { id: 2, title: "GenAI Security", category: "Innovation", icon: "🛡️", color: "#ff4500" },
+    { id: 3, title: "Oracle Cloud Certified", category: "Certification", icon: "☁️", color: "#4682b4" },
+    { id: 4, title: "Kafka Certified", category: "Certification", icon: "📜", color: "#32cd32" },
+    { id: 5, title: "IIT Ropar Minor", category: "Education", icon: "🎓", color: "#8a2be2" },
+    { id: 6, title: "Hackathon Champion", category: "Award", icon: "🥇", color: "#f59e0b" }
 ]
 
 // Static Cone - no rotation, positioned at center

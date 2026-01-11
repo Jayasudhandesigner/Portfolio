@@ -1,25 +1,22 @@
 import { useState } from 'react'
 
 const projectsData = {
-    ai: [
-        { title: 'Neural Network Visualizer', description: 'Interactive ML model visualization' },
-        { title: 'NLP Sentiment Analyzer', description: 'Real-time text sentiment analysis' },
-        { title: 'Computer Vision App', description: 'Object detection and tracking' }
+    mlops: [
+        { title: 'Clinical Trial Risk Prediction', description: 'MLOps platform achieving 85% accuracy with 3-tier risk stratification. Dockerized FastAPI service, reduced image size by 78%.' },
+        { title: 'Production AI Pipelines', description: 'Real-time anomaly detection and model health dashboards for healthcare-tech clients.' }
     ],
-    web: [
-        { title: 'E-commerce Platform', description: 'Full-stack online marketplace' },
-        { title: 'Real-time Chat App', description: 'WebSocket-based messaging' },
-        { title: 'Portfolio Generator', description: 'Dynamic portfolio builder' }
+    genai: [
+        { title: 'PyGenGuard', description: 'Runtime Security Framework for LLMs enforcing intent, cost, and compliance policies.' },
+        { title: 'RAG Chatbot with GROQ', description: 'High-speed RAG system using GROQ LPU for ultra-low latency inference and PDF ingestion.' }
     ],
-    mobile: [
-        { title: 'Fitness Tracker', description: 'React Native health app' },
-        { title: 'AR Shopping App', description: 'Augmented reality retail' },
-        { title: 'Task Manager', description: 'Cross-platform productivity' }
+    systems: [
+        { title: 'FlixMood', description: 'Hybrid recommendation engine combining Collaborative Filtering and TF-IDF with 72%+ accuracy.' },
+        { title: 'IoT Edge ML', description: 'Real-time IoT systems integrated with Machine Learning models for edge computing.' }
     ]
 }
 
 export default function ProjectsSection() {
-    const [activeCategory, setActiveCategory] = useState('ai')
+    const [activeCategory, setActiveCategory] = useState('mlops')
 
     return (
         <div className="canvas-wrapper" style={{ background: '#000', overflowY: 'auto' }}>
@@ -28,22 +25,22 @@ export default function ProjectsSection() {
 
                 <div className="project-categories">
                     <button
-                        className={`category-btn ${activeCategory === 'ai' ? 'active' : ''}`}
-                        onClick={() => setActiveCategory('ai')}
+                        className={`category-btn ${activeCategory === 'mlops' ? 'active' : ''}`}
+                        onClick={() => setActiveCategory('mlops')}
                     >
-                        AI/ML
+                        MLOps
                     </button>
                     <button
-                        className={`category-btn ${activeCategory === 'web' ? 'active' : ''}`}
-                        onClick={() => setActiveCategory('web')}
+                        className={`category-btn ${activeCategory === 'genai' ? 'active' : ''}`}
+                        onClick={() => setActiveCategory('genai')}
                     >
-                        Web Dev
+                        GenAI
                     </button>
                     <button
-                        className={`category-btn ${activeCategory === 'mobile' ? 'active' : ''}`}
-                        onClick={() => setActiveCategory('mobile')}
+                        className={`category-btn ${activeCategory === 'systems' ? 'active' : ''}`}
+                        onClick={() => setActiveCategory('systems')}
                     >
-                        Mobile
+                        AI Systems
                     </button>
                 </div>
 
