@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, Environment, Lightformer, Stars } from '@react-three/drei'
+import { useGLTF, Environment, Lightformer, Stars, Trail } from '@react-three/drei'
 import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
 
@@ -108,11 +108,21 @@ function OrbitingAuto({ angle, isMoving }) {
             <group ref={orientRef}>
                 {/* Inner group for Pitch (X-axis rotation) */}
                 <group ref={pitchGroupRef}>
-                    <primitive
-                        object={scene}
-                        scale={2} // Scaled up 4x from 0.5
-                        rotation={[0, Math.PI / 2, 0]} // Rotate the model itself to face "left" relative to its forward direction
-                    />
+                    {/* Smoke Trail */}
+                    <Trail
+                        width={1.5} // Width of the trail
+                        length={8}  // Length of the trail
+                        color={'#aaaaaa'} // Smoke color
+                        attenuation={(t) => t * t} // Taper off
+                        transparent
+                        opacity={0.3}
+                    >
+                        <primitive
+                            object={scene}
+                            scale={1.6} // Scaled down by x0.8 (2 * 0.8 = 1.6)
+                            rotation={[0, Math.PI / 2, 0]} // Rotate the model itself to face "left" relative to its forward direction
+                        />
+                    </Trail>
                 </group>
             </group>
         </group>
@@ -133,7 +143,7 @@ function VinayagModel() {
         <primitive
             object={scene}
             scale={8}
-            position={[0, -2.5, 0]} // Moved UP slightly from -5.5
+            position={[0, -3.5, 0]} // Brought down by 1 (was -2.5)
             rotation={[0, 0, 0]}
         />
     )
@@ -229,10 +239,10 @@ export default function AchievementsSection() {
 
         const animate = () => {
             if (keysPressed.left) {
-                setCubeAngle(prev => prev - speed)
+                setCubeAngle(prev => prev + speed) // Inverted direction
             }
             if (keysPressed.right) {
-                setCubeAngle(prev => prev + speed)
+                setCubeAngle(prev => prev - speed) // Inverted direction
             }
             animationId = requestAnimationFrame(animate)
         }
