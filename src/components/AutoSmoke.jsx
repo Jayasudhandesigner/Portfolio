@@ -24,14 +24,13 @@ class Particle {
     update() {
         this.position.add(this.velocity);
 
-        // Drag / Gravity logic from user snippet:
-        // this.velocity.x += ((Math.random() < 0.5 ? -1 : 1) * 2) / 75;
-        // this.velocity.y -= Math.random() / 600; (Gravity? Smoke usually rises).
-        // User snippet: velocity.y -= ... -> Gravity pulls down.
-        // But for smoke trail, maybe up? I'll stick to user logic.
-        this.velocity.x += ((Math.random() < 0.5 ? -1 : 1) * 2) / 75;
-        this.velocity.y -= Math.random() / 600;
-        this.velocity.z += ((Math.random() < 0.5 ? -1 : 1) * 2) / 75;
+        // Reduced jitter: Use smaller random forces or remove per-frame random velocity changes
+        // Original: this.velocity.x += ((Math.random() < 0.5 ? -1 : 1) * 2) / 75; (~0.026)
+
+        // Smoother turbulence (1/10th strength)
+        this.velocity.x += (Math.random() - 0.5) * 0.005;
+        this.velocity.y -= Math.random() / 600; // Gravity/Buoyancy
+        this.velocity.z += (Math.random() - 0.5) * 0.005;
 
         this.lifeSpan--;
     }
