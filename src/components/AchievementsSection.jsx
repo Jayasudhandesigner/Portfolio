@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, Environment, Lightformer, Stars, Trail } from '@react-three/drei'
+import { useGLTF, Environment, Lightformer, Stars } from '@react-three/drei' // Removed Trail
 import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
+import { AutoSmoke } from './AutoSmoke' // Import new component
 
 // Achievement data
 const achievements = [
@@ -15,7 +16,7 @@ const achievements = [
 ]
 
 // Auto Model orbiting on ring path
-function OrbitingAuto({ angle, isMoving }) {
+function OrbitingAuto({ angle, isMoving, carRef }) {
     const { scene } = useGLTF('/models/auto.glb')
     const orientRef = useRef() // Ref for the group that handles orientation (Heading/Yaw)
     const posRef = useRef()    // Ref for the group that handles position (Y animation)
@@ -24,6 +25,13 @@ function OrbitingAuto({ angle, isMoving }) {
     const ampRef = useRef(0)
     const pitchValRef = useRef(0) // Track linear pitch value for lerping
     const { camera } = useThree()
+
+    // Sync external ref with internal specialized ref
+    useEffect(() => {
+        if (carRef && pitchGroupRef.current) {
+            carRef.current = pitchGroupRef.current
+        }
+    }, [carRef])
 
     // Simplified ring parameters matching CircularPath
     const offsetRadius = 5.2
@@ -108,21 +116,11 @@ function OrbitingAuto({ angle, isMoving }) {
             <group ref={orientRef}>
                 {/* Inner group for Pitch (X-axis rotation) */}
                 <group ref={pitchGroupRef}>
-                    {/* Smoke Trail */}
-                    <Trail
-                        width={1.5} // Width of the trail
-                        length={8}  // Length of the trail
-                        color={'#aaaaaa'} // Smoke color
-                        attenuation={(t) => t * t} // Taper off
-                        transparent
-                        opacity={0.3}
-                    >
-                        <primitive
-                            object={scene}
-                            scale={1.6} // Scaled down by x0.8 (2 * 0.8 = 1.6)
-                            rotation={[0, Math.PI / 2, 0]} // Rotate the model itself to face "left" relative to its forward direction
-                        />
-                    </Trail>
+                    <primitive
+                        object={scene}
+                        scale={1.6} // Scaled down by x0.8 (2 * 0.8 = 1.6)
+                        rotation={[0, Math.PI / 2, 0]} // Rotate the model itself to face "left" relative to its forward direction
+                    />
                 </group>
             </group>
         </group>
@@ -181,6 +179,8 @@ function CircularPath() {
 
 // Main 3D Scene
 function Scene({ cubeAngle, selectedAchievement, isMoving }) {
+    const carRef = useRef()
+
     return (
         <>
             {/* Stary Sky Background */}
@@ -211,10 +211,15 @@ function Scene({ cubeAngle, selectedAchievement, isMoving }) {
             <CircularPath />
 
             {/* Single cube on circumference, camera follows from outside */}
+            {/* Auto Model */}
             <OrbitingAuto
                 angle={cubeAngle}
                 isMoving={isMoving}
+                carRef={carRef}
             />
+
+            {/* Auto Smoke detached from hierarchy */}
+            <AutoSmoke isMoving={isMoving} target={carRef} />
 
             {/* Post Processing for Motion Blur/Bloom */}
             <EffectComposer>
