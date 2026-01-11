@@ -8,6 +8,7 @@ import ProjectsSection from './components/ProjectsSection'
 import ResumeSection from './components/ResumeSection'
 import { SoundProvider, MuteButton, useSound } from './components/SoundManager'
 import GlobalPreloader from './components/GlobalPreloader'
+import StaggeredMenu from './components/StaggeredMenu' // 1. Import StaggeredMenu
 
 // Inner App component that uses sound context
 function AppContent() {
@@ -21,6 +22,7 @@ function AppContent() {
 
   const sections = ['Home', 'Skills', 'Achievements', 'Models', 'Projects', 'Resume']
   const totalSections = sections.length
+
 
   // Handle section change with simple GSAP animation
   const changeSection = useCallback((newSection) => {
@@ -183,14 +185,36 @@ function AppContent() {
     }
   }, [currentSection, playHover, playClick])
 
+  // Prepare menu items for StaggeredMenu
+  const menuItems = sections.map((label, index) => ({
+    label: label,
+    link: `#${label.toLowerCase()} `,
+    index: index // Store index for click handler
+  }));
+
+  const socialItems = [
+    { label: 'GitHub', link: 'https://github.com/Jayasudhan-1050' },
+    { label: 'LinkedIn', link: 'https://www.linkedin.com/in/jayasudhan-s/' },
+    { label: 'Twitter', link: 'https://twitter.com/jayasudhan_' }
+  ];
+
   return (
     <>
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '0px', zIndex: 100 }}>
+        <StaggeredMenu
+          items={menuItems}
+          socialItems={socialItems}
+          logoUrl="" // Or path to logo
+          onItemClick={(item) => changeSection(item.index)}
+        />
+      </div>
+
       {/* Custom Cursor */}
       <div
-        className={`custom-cursor ${cursorClass}`}
+        className={`custom - cursor ${cursorClass} `}
         style={{
-          left: `${mousePos.x - 10}px`,
-          top: `${mousePos.y - 10}px`,
+          left: `${mousePos.x - 10} px`,
+          top: `${mousePos.y - 10} px`,
         }}
       />
 
@@ -199,7 +223,7 @@ function AppContent() {
         {sections.map((_, index) => (
           <div
             key={index}
-            className={`indicator-dot ${currentSection === index ? 'active' : ''}`}
+            className={`indicator - dot ${currentSection === index ? 'active' : ''} `}
             onClick={() => changeSection(index)}
             onMouseEnter={playHover}
           />
