@@ -8,13 +8,12 @@ import ProjectsSection from './components/ProjectsSection'
 import ResumeSection from './components/ResumeSection'
 import { SoundProvider, MuteButton, useSound } from './components/SoundManager'
 import GlobalPreloader from './components/GlobalPreloader'
-import StaggeredMenu from './components/StaggeredMenu' // 1. Import StaggeredMenu
+import StaggeredMenu from './components/StaggeredMenu'
+import TargetCursor from './components/TargetCursor'
 
 // Inner App component that uses sound context
 function AppContent() {
   const [currentSection, setCurrentSection] = useState(0)
-  const [cursorClass, setCursorClass] = useState('')
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isTransitioning, setIsTransitioning] = useState(false)
   const lastMousePos = useRef({ x: 0, y: 0 })
 
@@ -23,31 +22,31 @@ function AppContent() {
   const sections = ['Home', 'Skills', 'Achievements', 'Models', 'Projects', 'Resume']
   const totalSections = sections.length
 
-
-  // Handle section change with simple GSAP animation
+  // Handle section change with new Ripple Transition logic
   const changeSection = useCallback((newSection) => {
     if (newSection === currentSection || isTransitioning) return
 
     setIsTransitioning(true)
     playTransition()
 
-    // Simple fade transition using GSAP
+    // Simple fade of content synchronized with Ripple Overlay
     const sectionWrapper = document.querySelector('.section-wrapper')
     if (sectionWrapper) {
       gsap.to(sectionWrapper, {
         opacity: 0,
-        y: newSection > currentSection ? -20 : 20,
-        duration: 0.2,
+        y: newSection > currentSection ? -50 : 50, // More movement
+        duration: 0.4,
         ease: 'power2.in',
         onComplete: () => {
           setCurrentSection(newSection)
           gsap.fromTo(sectionWrapper,
-            { opacity: 0, y: newSection > currentSection ? 20 : -20 },
+            { opacity: 0, y: newSection > currentSection ? 50 : -50 },
             {
               opacity: 1,
               y: 0,
-              duration: 0.3,
+              duration: 0.5,
               ease: 'power2.out',
+              delay: 0.2, // Wait for ripple to cover
               onComplete: () => setIsTransitioning(false)
             }
           )
@@ -59,27 +58,7 @@ function AppContent() {
     }
   }, [currentSection, isTransitioning, playTransition])
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      const newX = e.clientX
-      const newY = e.clientY
 
-      // Calculate mouse speed
-      const dx = newX - lastMousePos.current.x
-      const dy = newY - lastMousePos.current.y
-      const speed = Math.sqrt(dx * dx + dy * dy)
-
-      // Play mellow tune based on speed
-      if (speed > 8) {
-        playMouseWind(speed)
-      }
-
-      lastMousePos.current = { x: newX, y: newY }
-      setMousePos({ x: newX, y: newY })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [playMouseWind])
 
   // Touch/Swipe support for mobile
   useEffect(() => {
@@ -207,13 +186,12 @@ function AppContent() {
         onItemClick={(item) => changeSection(item.index)}
       />
 
-      {/* Custom Cursor */}
-      <div
-        className={`custom - cursor ${cursorClass} `}
-        style={{
-          left: `${mousePos.x - 10} px`,
-          top: `${mousePos.y - 10} px`,
-        }}
+      <TargetCursor
+        targetSelector="button, a, .nav-btn, .indicator-dot, .project-card, .skill-card, [role='button'], .sm-panel-item"
+        spinDuration={2.7}
+        hideDefaultCursor={true}
+        hoverDuration={0.65}
+        parallaxOn={false}
       />
 
       {/* Section Indicator */}

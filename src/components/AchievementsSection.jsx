@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, Environment, Lightformer, Sky, Cloud } from '@react-three/drei' // Removed Trail
+import { useGLTF, Environment, Lightformer, Sky, Cloud, Text, Float } from '@react-three/drei' // Added Text, Float
 import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import { AutoSmoke } from './AutoSmoke' // Import new component
@@ -211,6 +211,34 @@ function Scene({ cubeAngle, selectedAchievement, isMoving }) {
 
             {/* Vinayag Model at center */}
             <VinayagModel />
+
+            {/* Floating 3D Title */}
+            <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5} floatingRange={[0.2, 0.5]}>
+                <Text
+                    fontSize={1.2}
+                    maxWidth={5}
+                    lineHeight={1}
+                    letterSpacing={0.02}
+                    textAlign="center"
+                    position={[0, 5, 0]}
+                    color="white"
+                    anchorX="center"
+                    anchorY="middle"
+                    outlineWidth={0.04}
+                    outlineColor="#000000"
+                >
+                    {achievements[selectedAchievement].title.toUpperCase()}
+                </Text>
+                <Text
+                    fontSize={0.4}
+                    position={[0, 4.2, 0]}
+                    color={achievements[selectedAchievement].color}
+                    anchorX="center"
+                    anchorY="middle"
+                >
+                    {achievements[selectedAchievement].category}
+                </Text>
+            </Float>
 
             {/* Circular path the cube follows */}
             <CircularPath />
