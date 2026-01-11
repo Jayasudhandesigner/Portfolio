@@ -26,7 +26,7 @@ function HeroModel() {
             {/* Dynamic cursor light - INTENSIFIED */}
             <pointLight
                 ref={lightRef}
-                intensity={200}
+                intensity={500}
                 distance={50}
                 color="#ffffff"
             />

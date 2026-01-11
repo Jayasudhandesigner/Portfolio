@@ -18,9 +18,14 @@ export default function ResumeSection() {
                 <p style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>
                     Download my complete resume to learn more about my experience
                 </p>
-                <button className="download-btn" onClick={handleDownload}>
+                <a href="/resume.pdf" download="Jayasudhan_Resume.pdf" className="download-btn" style={{
+                    display: 'inline-block',
+                    textDecoration: 'none',
+                    textAlign: 'center',
+                    lineHeight: 'initial' // Reset if needed, buttons usually center text
+                }}>
                     Download Resume
-                </button>
+                </a>
             </div>
         </div>
     )

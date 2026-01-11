@@ -195,9 +195,9 @@ export default function IntroSection() {
 
             <div className="overlay-text intro-overlay">
                 <div className="intro-welcome">Welcome to</div>
-                <div className="name">My Portfolio</div>
+                <div className="name">Jayasudhan M</div>
                 <div className="intro-tagline">
-                    Innovative Solutions • Creative Design • Cutting-Edge Technology
+                    AI Engineer • 3D Artist • Operations Manager
                 </div>
                 <div className="scroll-hint">
                     <span>↓ Scroll to Explore ↓</span>
