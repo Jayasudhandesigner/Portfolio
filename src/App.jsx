@@ -3,7 +3,6 @@ import { gsap } from 'gsap'
 import HeroSection from './components/HeroSection'
 import SkillsSection from './components/SkillsSection'
 import AchievementsSection from './components/AchievementsSection'
-import FishSection from './components/FishSection'
 import ModelsSection from './components/ModelsSection'
 import ProjectsSection from './components/ProjectsSection'
 import ResumeSection from './components/ResumeSection'
@@ -11,6 +10,7 @@ import { SoundProvider, MuteButton, useSound } from './components/SoundManager'
 import GlobalPreloader from './components/GlobalPreloader'
 import StaggeredMenu from './components/StaggeredMenu'
 import TargetCursor from './components/TargetCursor'
+import FishSection from './components/FishSection'
 
 // Inner App component that uses sound context
 function AppContent() {
