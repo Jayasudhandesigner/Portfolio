@@ -29,7 +29,7 @@ class Particle {
     }
 }
 
-export function AutoSmoke({ isMoving, target }) {
+export function AutoSmoke({ isMovingRef, target }) {
     const particlesRef = useRef([]);
     const geometryRef = useRef(new THREE.BufferGeometry());
     const materialRef = useRef();
@@ -70,7 +70,7 @@ export function AutoSmoke({ isMoving, target }) {
 
     useFrame(() => {
         // Spawn
-        if (isMoving && target && target.current) {
+        if (isMovingRef?.current && target && target.current) {
             const spawnPos = new THREE.Vector3();
             target.current.getWorldPosition(spawnPos);
 
