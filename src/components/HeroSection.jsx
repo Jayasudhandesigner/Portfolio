@@ -16,7 +16,7 @@ function HeroModel() {
             lightRef.current.position.set(
                 mouse.x * 10,  // Scale mouse X to world coordinates
                 mouse.y * 10,  // Scale mouse Y to world coordinates
-                10             // Position slightly in front of model (model is at z=14)
+                18             // Position in front of model (model is at z=14)
             )
         }
     })
@@ -32,9 +32,9 @@ function HeroModel() {
             />
 
             {/* Additional strong lights to illuminate the model */}
-            <pointLight position={[0, -2, 12]} intensity={25} color="#f59e0b" />
-            <pointLight position={[3, 2, 10]} intensity={15} color="#ea580c" />
-            <pointLight position={[-3, -1, 10]} intensity={10} color="#fbbf24" />
+            <pointLight position={[0, -2, 18]} intensity={25} color="#f59e0b" />
+            <pointLight position={[3, 2, 18]} intensity={15} color="#ea580c" />
+            <pointLight position={[-3, -1, 18]} intensity={10} color="#fbbf24" />
 
             {/* Model - using exact HTML coordinates */}
             <primitive
