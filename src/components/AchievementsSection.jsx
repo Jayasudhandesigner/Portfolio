@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, Suspense } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, Environment, Lightformer, Sky, Cloud, Text, Float } from '@react-three/drei' // Added Text, Float
 import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing'
@@ -16,13 +16,14 @@ const achievements = [
 ]
 
 // Auto Model orbiting on ring path
-function OrbitingAuto({ angleRef, isMovingRef, carRef }) {
+function OrbitingAuto({ angle, isMoving, carRef }) {
     const { scene } = useGLTF('/models/auto.glb')
-    const orientRef = useRef()
-    const posRef = useRef()
-    const pitchGroupRef = useRef()
+    const orientRef = useRef() // Ref for the group that handles orientation (Heading/Yaw)
+    const posRef = useRef()    // Ref for the group that handles position (Y animation)
+    const pitchGroupRef = useRef() // Ref for pitch rotation (X-axis)
     const timeRef = useRef(0)
     const ampRef = useRef(0)
+    const pitchValRef = useRef(0) // Track linear pitch value for lerping
     const { camera } = useThree()
 
     // Sync external ref with internal specialized ref
@@ -32,24 +33,23 @@ function OrbitingAuto({ angleRef, isMovingRef, carRef }) {
         }
     }, [carRef])
 
+    // Simplified ring parameters matching CircularPath
     const offsetRadius = 5.2
-    const basePathY = -1.5
+    const basePathY = -1.5 // Base Y position for the orbit
 
+    // Position on circular path (X and Z are handled by React props, Y is animated)
+    const cubeX = Math.cos(angle) * offsetRadius
+    const cubeZ = Math.sin(angle) * offsetRadius
+
+    // Animate Y axis: 0 -> 2 -> 0 -> -2 -> 0 loop relative to base
     useFrame((state, delta) => {
-        const angle = angleRef.current
-        const isMoving = isMovingRef.current
-
-        // Calculate position based on current REF angle
-        const cubeX = Math.cos(angle) * offsetRadius
-        const cubeZ = Math.sin(angle) * offsetRadius
-
         // Only advance time if moving
         if (isMoving) {
-            timeRef.current += delta * 5
+            timeRef.current += delta * 5 // Speed factor for oscillation
         }
 
-        // Lerp amplitude
-        const targetAmp = isMoving ? 1 : 0
+        // Lerp amplitude based on isMoving state
+        const targetAmp = isMoving ? 1 : 0 // Target normalized amplitude
         ampRef.current = THREE.MathUtils.lerp(ampRef.current, targetAmp, delta * 2)
 
         // Smooth Sine Wave Shifted
@@ -60,35 +60,47 @@ function OrbitingAuto({ angleRef, isMovingRef, carRef }) {
         const currentY = basePathY + yOffset
 
         if (posRef.current) {
-            posRef.current.position.set(cubeX, currentY, cubeZ) // Update full position here
+            posRef.current.position.setY(currentY)
         }
 
-        // Pitch and Roll
+        // PHYSICAL TILT CALCULATION (Slope based)
+        // Base Pitch from derivative of motion
         const basePitchDeg = Math.cos(timeRef.current) * 30
-        const noisePitch = (Math.sin(timeRef.current * 8.5) * 0.5 + Math.cos(timeRef.current * 3.2) * 0.5) * 2
-        const noiseRoll = (Math.sin(timeRef.current * 4.2) * 0.5 + Math.cos(timeRef.current * 6.7) * 0.5) * 3
 
+        // RANDOM SUSPENSION NOISE (Simulate realism)
+        // Use non-harmonic frequencies to simulate randomness
+        const t = timeRef.current
+        const noisePitch = (Math.sin(t * 8.5) * 0.5 + Math.cos(t * 3.2) * 0.5) * 2 // slight X jitter
+        const noiseRoll = (Math.sin(t * 4.2) * 0.5 + Math.cos(t * 6.7) * 0.5) * 3  // slight Z wobble (Roll)
+
+        // Combine base slope + noise, scale by amplitude (motion intensity)
         const totalPitch = (basePitchDeg + noisePitch) * ampRef.current
         const totalRoll = noiseRoll * ampRef.current
 
+        // Apply rotations
         if (pitchGroupRef.current) {
+            // Apply Pitch (X-axis)
             pitchGroupRef.current.rotation.x = THREE.MathUtils.degToRad(totalPitch)
+            // Apply Roll (Z-axis) - simulates uneven terrain/suspension
             pitchGroupRef.current.rotation.z = THREE.MathUtils.degToRad(totalRoll)
         }
 
-        // Camera Follow
+        // Update camera to follow
         const cameraDistance = 6
         const cameraHeight = 1.5
         const cameraRadius = offsetRadius + cameraDistance
+
         const camX = Math.cos(angle) * cameraRadius
         const camZ = Math.sin(angle) * cameraRadius
-        const camY = currentY + cameraHeight
+        const camY = currentY + cameraHeight // Camera follows the car's animated height
 
         camera.position.set(camX, camY, camZ)
-        camera.lookAt(cubeX, currentY, cubeZ)
+        camera.lookAt(cubeX, currentY, cubeZ) // Camera looks at the car's current position
 
-        // Orientation
+        // Ensure auto faces the direction of travel (tangent)
         if (orientRef.current) {
+            // Look at next point in orbit (in world coordinates)
+            // The target Y is the currentY of the car to keep it level with its path
             orientRef.current.lookAt(
                 Math.cos(angle + 0.1) * offsetRadius,
                 currentY,
@@ -98,13 +110,16 @@ function OrbitingAuto({ angleRef, isMovingRef, carRef }) {
     })
 
     return (
-        <group ref={posRef}>
+        // Outer group for position, X and Z are set by props, Y is animated in useFrame
+        <group ref={posRef} position={[cubeX, basePathY, cubeZ]}>
+            {/* Inner group for orientation, lookAt is applied here */}
             <group ref={orientRef}>
+                {/* Inner group for Pitch (X-axis rotation) */}
                 <group ref={pitchGroupRef}>
                     <primitive
                         object={scene}
-                        scale={1.6}
-                        rotation={[0, Math.PI / 2, 0]}
+                        scale={1.6} // Scaled down by x0.8 (2 * 0.8 = 1.6)
+                        rotation={[0, Math.PI / 2, 0]} // Rotate the model itself to face "left" relative to its forward direction
                     />
                 </group>
             </group>
@@ -112,50 +127,62 @@ function OrbitingAuto({ angleRef, isMovingRef, carRef }) {
     )
 }
 
-function AnimationController({ angleRef, isMovingRef, setSelectedIndex, keysPressed }) {
-    useFrame(() => {
-        const speed = 0.025
-        let moving = false
-
-        if (keysPressed.current.left) {
-            angleRef.current += speed
-            moving = true
+// Vinayag Model at center
+function VinayagModel() {
+    const { scene } = useGLTF('/models/vinayag.glb')
+    // Enable shadows for the model
+    scene.traverse((child) => {
+        if (child.isMesh) {
+            child.castShadow = true
+            child.receiveShadow = true
         }
-        if (keysPressed.current.right) {
-            angleRef.current -= speed
-            moving = true
-        }
-
-        // isMovingRef updated by Scroll logic externally or keys here
-        // If keys are active, override scroll moving state?
-        // Let's OR them: isMoving is true if keys OR scroll.
-        // But scroll sets it to true, we need to decay it?
-        // Helper: if keys moving, set true. If not keys, wait for scroll timeout (handled in component).
-        if (moving) isMovingRef.current = true
-
-        // Sync UI
-        const normalizedAngle = ((angleRef.current % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
-        const index = Math.floor((normalizedAngle / (Math.PI * 2)) * achievements.length) % achievements.length
-        setSelectedIndex(index)
     })
-    return null
+    return (
+        <primitive
+            object={scene}
+            scale={8}
+            position={[0, -3.5, 0]} // Brought down by 1 (was -2.5)
+            rotation={[0, 0, 0]}
+        />
+    )
 }
 
-// ... VinayagModel, CircularPath unchanged ...
+// CircularPath (unchanged)
+function CircularPath() {
+    const points = useMemo(() => {
+        const pts = []
+        const coneRadius = 4
+        const y = -1.5
+        const offsetRadius = coneRadius + 1.2
+
+        for (let i = 0; i <= 64; i++) {
+            const a = (i / 64) * Math.PI * 2
+            pts.push(new THREE.Vector3(
+                Math.cos(a) * offsetRadius,
+                y,
+                Math.sin(a) * offsetRadius
+            ))
+        }
+        return pts
+    }, [])
+
+    const lineGeometry = useMemo(() => {
+        return new THREE.BufferGeometry().setFromPoints(points)
+    }, [points])
+
+    return (
+        <line geometry={lineGeometry}>
+            <lineBasicMaterial color="#f59e0b" opacity={0.3} transparent />
+        </line>
+    )
+}
 
 // Main 3D Scene
-function Scene({ angleRef, isMovingRef, selectedAchievement, keysPressed, setSelectedIndex }) {
+function Scene({ cubeAngle, selectedAchievement, isMoving }) {
     const carRef = useRef()
 
     return (
         <>
-            <AnimationController
-                angleRef={angleRef}
-                isMovingRef={isMovingRef}
-                setSelectedIndex={setSelectedIndex}
-                keysPressed={keysPressed}
-            />
-
             {/* Blue Sky and Mist Environment */}
             <color attach="background" args={['#87CEEB']} />
             <fog attach="fog" args={['#87CEEB', 8, 35]} />
@@ -166,6 +193,8 @@ function Scene({ angleRef, isMovingRef, selectedAchievement, keysPressed, setSel
 
             {/* STRONG Lighting */}
             <ambientLight intensity={1.5} />
+
+            {/* Spotlight for the model */}
             <spotLight
                 position={[0, 15, 10]}
                 angle={0.5}
@@ -175,10 +204,12 @@ function Scene({ angleRef, isMovingRef, selectedAchievement, keysPressed, setSel
                 shadow-bias={-0.0001}
                 color="#ffaa00"
             />
+            {/* Extra Fill lights */}
             <pointLight position={[10, 5, 10]} intensity={2} color="#f59e0b" />
             <pointLight position={[-10, 5, -10]} intensity={2} color="#8a2be2" />
             <pointLight position={[0, -5, 5]} intensity={3} color="#ffffff" />
 
+            {/* Vinayag Model at center */}
             <VinayagModel />
 
             {/* Floating 3D Title */}
@@ -209,28 +240,21 @@ function Scene({ angleRef, isMovingRef, selectedAchievement, keysPressed, setSel
                 </Text>
             </Float>
 
+            {/* Circular path the cube follows */}
             <CircularPath />
 
+            {/* Single cube on circumference, camera follows from outside */}
+            {/* Auto Model */}
             <OrbitingAuto
-                angleRef={angleRef}
-                isMovingRef={isMovingRef}
+                angle={cubeAngle}
+                isMoving={isMoving}
                 carRef={carRef}
             />
 
-            <AutoSmoke isMovingRef={isMovingRef} target={carRef} /> {/* AutoSmoke reads ref itself? No, AutoSmoke props. */}
-            {/* AutoSmoke needs to know isMoving. Pass Ref? Or pass boolean? */}
-            {/* AutoSmoke checks `if (isMoving && ...)` in useFrame. passing `isMovingRef.current` passes value AT RENDER time. */}
-            {/* We need to pass the REF to AutoSmoke or update AutoSmoke to accept ref. */}
-            {/* I will update AutoSmoke inline here by passing `isMovingRef`. */}
-            {/* Wait, AutoSmoke expects `isMoving` boolean. */}
-            {/* I should update AutoSmoke to accept `isMovingRef`. */}
-            {/* OR: I'll hack it: AutoSmoke uses `useFrame`. */}
-            {/* I'll pass `isMovingRef` as prop `isMovingRef` to AutoSmoke? */}
-            {/* I'll update AutoSmoke usage: `<AutoSmoke isMovingRef={isMovingRef} target={carRef} />` */}
-            {/* And I need to update AutoSmoke.jsx later to use the ref. */}
-            {/* Check Step 708: AutoSmoke file was not edited. */}
-            {/* I'll temporarily pass the ref as `movingRef` and update AutoSmoke in next step. */}
+            {/* Auto Smoke detached from hierarchy */}
+            <AutoSmoke isMoving={isMoving} target={carRef} />
 
+            {/* Post Processing for Motion Blur/Bloom */}
             <EffectComposer>
                 <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} height={300} intensity={0.5} />
                 <Noise opacity={0.02} />
@@ -242,103 +266,84 @@ function Scene({ angleRef, isMovingRef, selectedAchievement, keysPressed, setSel
 
 // Main Component
 export default function AchievementsSection() {
-    const angleRef = useRef(0)
-    const isMovingRef = useRef(false)
-    const keysPressed = useRef({ left: false, right: false })
+    const [cubeAngle, setCubeAngle] = useState(0)
     const [selectedAchievement, setSelectedAchievement] = useState(0)
-    const scrollTimeout = useRef(null)
+    const [keysPressed, setKeysPressed] = useState({ left: false, right: false })
 
-    // Handle keyboard input via Refs to avoid re-renders
+    // Continuous smooth movement with arrow keys
+    useEffect(() => {
+        const speed = 0.025
+        let animationId
+
+        const animate = () => {
+            if (keysPressed.left) {
+                setCubeAngle(prev => prev + speed) // Inverted direction
+            }
+            if (keysPressed.right) {
+                setCubeAngle(prev => prev - speed) // Inverted direction
+            }
+            animationId = requestAnimationFrame(animate)
+        }
+
+        animationId = requestAnimationFrame(animate)
+        return () => cancelAnimationFrame(animationId)
+    }, [keysPressed])
+
+    // Handle keyboard input
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'ArrowLeft') keysPressed.current.left = true
-            else if (e.key === 'ArrowRight') keysPressed.current.right = true
-        }
-        const handleKeyUp = (e) => {
             if (e.key === 'ArrowLeft') {
-                keysPressed.current.left = false
-                isMovingRef.current = false
+                setKeysPressed(prev => ({ ...prev, left: true }))
             } else if (e.key === 'ArrowRight') {
-                keysPressed.current.right = false
-                isMovingRef.current = false
+                setKeysPressed(prev => ({ ...prev, right: true }))
             }
         }
+
+        const handleKeyUp = (e) => {
+            if (e.key === 'ArrowLeft') {
+                setKeysPressed(prev => ({ ...prev, left: false }))
+            } else if (e.key === 'ArrowRight') {
+                setKeysPressed(prev => ({ ...prev, right: false }))
+            }
+        }
+
         window.addEventListener('keydown', handleKeyDown)
         window.addEventListener('keyup', handleKeyUp)
+
         return () => {
             window.removeEventListener('keydown', handleKeyDown)
             window.removeEventListener('keyup', handleKeyUp)
         }
     }, [])
 
-    const handleMiddleWheel = (e) => {
-        e.stopPropagation()
-        // e.preventDefault() // React Synthetic event might not support all preventing?
-        // IMPORTANT: To prevent default browser scroll, this handler might need to be non-passive.
-        // React's onWheel is passive. 
-        // We might need a native ref listener on the div.
-
-        const speed = 0.005
-        angleRef.current += e.deltaY * speed
-        isMovingRef.current = true
-
-        if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
-        scrollTimeout.current = setTimeout(() => {
-            isMovingRef.current = false
-        }, 100)
-    }
-
-    // Ref for the middle zone to attach non-passive listener
-    const middleZoneRef = useRef(null)
-
+    // Update selected achievement based on cube angle
     useEffect(() => {
-        const el = middleZoneRef.current
-        if (el) {
-            const onWheel = (e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                const speed = 0.005
-                angleRef.current += e.deltaY * speed
-                isMovingRef.current = true // Direct ref update
-
-                if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
-                scrollTimeout.current = setTimeout(() => {
-                    isMovingRef.current = false
-                }, 100)
-            }
-            // Add non-passive listener
-            el.addEventListener('wheel', onWheel, { passive: false })
-            return () => el.removeEventListener('wheel', onWheel)
-        }
-    }, [])
+        const normalizedAngle = ((cubeAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
+        const index = Math.floor((normalizedAngle / (Math.PI * 2)) * achievements.length) % achievements.length
+        setSelectedAchievement(index)
+    }, [cubeAngle])
 
     const currentAchievement = achievements[selectedAchievement]
 
-    return (
-        <div className="achievements-3d-section" style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-            {/* Scroll Zones Overlay */}
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10, display: 'flex', flexDirection: 'column' }}>
-                <div style={{ height: '30vh', width: '100%', pointerEvents: 'none' }} /> {/* Top Zone: Scroll Through */}
-                <div ref={middleZoneRef} style={{ height: '40vh', width: '100%', cursor: 'ew-resize' }} /> {/* Middle Zone: Intercept Scroll */}
-                <div style={{ height: '30vh', width: '100%', pointerEvents: 'none' }} /> {/* Bottom Zone: Scroll Through */}
-            </div>
+    const isMoving = keysPressed.left || keysPressed.right
 
+    return (
+        <div className="achievements-3d-section">
             {/* 3D Canvas */}
-            <div className="achievements-canvas-container" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            <div className="achievements-canvas-container">
                 <Canvas
                     camera={{ position: [0, 2, 12], fov: 50 }}
                     style={{ background: 'transparent' }}
                 >
-                    <Scene
-                        angleRef={angleRef}
-                        isMovingRef={isMovingRef}
-                        selectedAchievement={selectedAchievement}
-                        keysPressed={keysPressed}
-                        setSelectedIndex={setSelectedAchievement}
-                    />
+                    <Suspense fallback={null}>
+                        <Scene
+                            cubeAngle={cubeAngle}
+                            selectedAchievement={selectedAchievement}
+                            isMoving={isMoving}
+                        />
+                    </Suspense>
                 </Canvas>
             </div>
-
 
             {/* UI Overlay */}
             <div className="achievements-3d-header">

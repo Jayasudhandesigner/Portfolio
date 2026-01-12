@@ -10,7 +10,6 @@ import { SoundProvider, MuteButton, useSound } from './components/SoundManager'
 import GlobalPreloader from './components/GlobalPreloader'
 import StaggeredMenu from './components/StaggeredMenu'
 import TargetCursor from './components/TargetCursor'
-import FishSection from './components/FishSection'
 
 // Inner App component that uses sound context
 function AppContent() {
@@ -20,7 +19,7 @@ function AppContent() {
 
   const { playHover, playClick, playTransition, playMouseWind } = useSound()
 
-  const sections = ['Home', 'Skills', 'Achievements', 'Fish', 'Models', 'Projects', 'Resume']
+  const sections = ['Home', 'Skills', 'Achievements', 'Models', 'Projects', 'Resume']
   const totalSections = sections.length
 
   // Handle section change with new Ripple Transition logic
@@ -215,10 +214,9 @@ function AppContent() {
         {currentSection === 0 && <HeroSection />}
         {currentSection === 1 && <SkillsSection />}
         {currentSection === 2 && <AchievementsSection />}
-        {currentSection === 3 && <FishSection />}
-        {currentSection === 4 && <ModelsSection />}
-        {currentSection === 5 && <ProjectsSection />}
-        {currentSection === 6 && <ResumeSection />}
+        {currentSection === 3 && <ModelsSection />}
+        {currentSection === 4 && <ProjectsSection />}
+        {currentSection === 5 && <ResumeSection />}
       </div>
     </>
   )

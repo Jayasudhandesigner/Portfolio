@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useProgress } from '@react-three/drei'
 
 // Indian language character sets
 const INDIAN_CHARS = {
@@ -24,9 +25,9 @@ const getRandomChars = (count) => Array(count).fill(0).map(() => getRandomChar()
 
 // Global Preloader Component with Indian language letters
 export default function GlobalPreloader({ onLoadComplete }) {
-    const [progress, setProgress] = useState(0)
+    const { active, progress } = useProgress()
+    const [displayProgress, setDisplayProgress] = useState(0)
     const [isVisible, setIsVisible] = useState(true)
-    const [displayText, setDisplayText] = useState('')
     const [rollingChars, setRollingChars] = useState(getRandomChars(30))
     const [typedName, setTypedName] = useState('')
     const targetName = 'JAYASUDHAN M'
@@ -66,30 +67,39 @@ export default function GlobalPreloader({ onLoadComplete }) {
         }
     }, [])
 
-    // Progress simulation
+    // Real progress synchronization
     useEffect(() => {
-        const interval = setInterval(() => {
-            setProgress(prev => {
-                if (prev >= 100) {
-                    clearInterval(interval)
-                    setTimeout(() => {
-                        setIsVisible(false)
-                        if (onLoadComplete) onLoadComplete()
-                    }, 800)
-                    return 100
-                }
-                const increment = Math.max(1, Math.floor((100 - prev) / 12))
-                return Math.min(prev + increment, 100)
-            })
-        }, 80)
+        // We ensure display progress catches up to real progress, 
+        // but not instantly to keep animations smooth
+        if (progress > displayProgress) {
+            const diff = progress - displayProgress
+            // Jump faster if difference is large
+            const step = Math.max(1, Math.ceil(diff / 10))
+            const timer = setTimeout(() => {
+                setDisplayProgress(prev => Math.min(prev + step, 100))
+            }, 50)
+            return () => clearTimeout(timer)
+        }
+    }, [progress, displayProgress])
 
-        return () => clearInterval(interval)
-    }, [onLoadComplete])
+    // Completion check
+    useEffect(() => {
+        // Finish when progress is 100 AND not active (sometimes active toggles)
+        // We'll trust 100% progress primarily
+        if (displayProgress >= 100) {
+            const finishTimer = setTimeout(() => {
+                setIsVisible(false)
+                if (onLoadComplete) onLoadComplete()
+            }, 800)
+            return () => clearTimeout(finishTimer)
+        }
+    }, [displayProgress, onLoadComplete])
+
 
     if (!isVisible) return null
 
     return (
-        <div className={`global-preloader ${progress >= 100 ? 'fade-out' : ''}`}>
+        <div className={`global-preloader ${displayProgress >= 100 ? 'fade-out' : ''}`}>
             {/* Background rolling characters */}
             <div className="preloader-background-chars">
                 {[...Array(8)].map((_, rowIndex) => (
@@ -145,7 +155,7 @@ export default function GlobalPreloader({ onLoadComplete }) {
                                 className="subtitle-letter"
                                 style={{ animationDelay: `${i * 0.1}s` }}
                             >
-                                {progress < 50 ?
+                                {displayProgress < 50 ?
                                     (Math.random() > 0.3 ? getRandomChar() : letter) :
                                     letter
                                 }
@@ -160,13 +170,13 @@ export default function GlobalPreloader({ onLoadComplete }) {
                         {[...Array(10)].map((_, i) => (
                             <span
                                 key={i}
-                                className={`progress-char ${i < Math.floor(progress / 10) ? 'active' : ''}`}
+                                className={`progress-char ${i < Math.floor(displayProgress / 10) ? 'active' : ''}`}
                             >
                                 {getRandomChar()}
                             </span>
                         ))}
                     </div>
-                    <div className="progress-percent">{progress}%</div>
+                    <div className="progress-percent">{Math.round(displayProgress)}%</div>
                 </div>
 
                 {/* Rolling bottom characters */}
