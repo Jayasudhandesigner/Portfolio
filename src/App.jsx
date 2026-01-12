@@ -212,7 +212,7 @@ function AppContent() {
       {/* Sections */}
       <div className="section-wrapper">
         {currentSection === 0 && <HeroSection />}
-        {currentSection === 1 && <SkillsSection setCursorClass={setCursorClass} />}
+        {currentSection === 1 && <SkillsSection />}
         {currentSection === 2 && <AchievementsSection />}
         {currentSection === 3 && <ModelsSection />}
         {currentSection === 4 && <ProjectsSection />}

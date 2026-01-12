@@ -12,7 +12,7 @@ useTexture.preload('https://assets.vercel.com/image/upload/contentful/image/e538
 
 export default function SkillsSection({ setCursorClass }) {
     return (
-        <div className="canvas-wrapper">
+        <div className="canvas-wrapper" style={{ width: '100vw', height: '100vh', position: 'relative' }}>
             <Canvas camera={{ position: [0, 0, 13], fov: 25 }}>
                 <ambientLight intensity={Math.PI} />
                 <Physics interpolate gravity={[0, -40, 0]} timeStep={1 / 60}>
