@@ -288,7 +288,7 @@ function App() {
         {/* TECHNOLOGIES SECTION */}
         <section id="technologies" className="section split-section tech-section">
           <div className="split-left">
-            <h2 className="section-title">OUR<br/>TECHNOLOGIES</h2>
+            <h2 className="section-title">MY<br/>TECHNOLOGIES</h2>
             <p style={{marginTop: '4rem', marginBottom: '2rem', maxWidth: '300px', color: '#999'}}>
               A personalized approach to every project — for the best results.
             </p>
@@ -322,7 +322,7 @@ function App() {
         {/* EXPERIENCE SECTION */}
         <section id="experience" className="section split-section">
           <div className="split-left">
-            <h2 className="section-title">OUR EXPERIENCE</h2>
+            <h2 className="section-title">MY EXPERIENCE</h2>
           </div>
           <div className="split-right">
             <div className="timeline">
@@ -413,7 +413,7 @@ function App() {
         {/* PROJECTS SECTION */}
         <section id="projects" className="section split-section">
           <div className="split-left">
-            <h2 className="section-title">OUR PROJECTS</h2>
+            <h2 className="section-title">MY PROJECTS</h2>
           </div>
           <div className="split-right">
             <div className="projects-massive-list">
@@ -437,7 +437,7 @@ function App() {
             </div>
             <div style={{marginTop: '4rem', textAlign: 'right'}}>
               <p className="projects-side-text" style={{maxWidth: '300px', marginLeft: 'auto', marginBottom: '2rem'}}>
-                Unlock the countless benefits that come with working with our AI systems.
+                Unlock the countless benefits that come with working with my AI systems.
               </p>
               <StarBorder as="a" href="https://github.com/Jayasudhandesigner" target="_blank" rel="noreferrer" className="pill-btn" color="#10b981">
                 <span className="btn-text">GITHUB PROFILE</span>
