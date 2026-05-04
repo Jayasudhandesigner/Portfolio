@@ -164,7 +164,7 @@ function App() {
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: 'url("/images/neural_hero.png")',
+            backgroundImage: 'url("images/neural_hero.png")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             zIndex: 1
@@ -240,7 +240,7 @@ function App() {
                 }}
               >
                 <img 
-                  src="/images/JayasudhanM.png" 
+                  src="images/JayasudhanM.png" 
                   alt="Jayasudhan" 
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%' }} 
                 />
@@ -355,10 +355,10 @@ function App() {
             gap: '2rem'
           }}>
             {[
-              { src: '/images/3d.jpg', title: '3D Modeling' },
-              { src: '/images/markettingposter.png', title: 'Marketing Campaign Design' },
-              { src: '/images/product.jpg', title: 'Product Visualization' },
-              { src: '/images/packaging_design.png', title: 'Premium Packaging Design' }
+              { src: 'images/3d.jpg', title: '3D Modeling' },
+              { src: 'images/markettingposter.png', title: 'Marketing Campaign Design' },
+              { src: 'images/product.jpg', title: 'Product Visualization' },
+              { src: 'images/packaging_design.png', title: 'Premium Packaging Design' }
             ].map((item, idx) => (
               <div key={idx} className="design-item" style={{
                 width: '100%', 
