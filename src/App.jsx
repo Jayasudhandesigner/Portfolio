@@ -292,10 +292,6 @@ function App() {
             <p style={{marginTop: '4rem', marginBottom: '2rem', maxWidth: '300px', color: '#999'}}>
               A personalized approach to every project — for the best results.
             </p>
-            <StarBorder as="a" href="/resume.pdf" download className="pill-btn" color="#f59e0b">
-              <span className="btn-text">DOWNLOAD RESUME</span>
-              <span className="arrow-circle">←</span>
-            </StarBorder>
           </div>
           <div className="split-right tech-grid">
             {Object.values(techSkills).map((col, idx) => (
