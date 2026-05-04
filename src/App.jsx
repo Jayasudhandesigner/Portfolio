@@ -100,7 +100,7 @@ const techSkills = {
   col1: {
     title: 'AGENTIC AI & AGENTS',
     items: [
-      { name: 'n8n / CrewAI', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/n8n/n8n-original.svg' },
+      { name: 'n8n / CrewAI', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/n8n/n8n-plain.svg' },
       { name: 'LangChain / AutoGen', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg' },
       { name: 'LlamaIndex / RAG', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytorch/pytorch-original.svg' },
       { name: 'Pinecone / Vector DB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg' }
