@@ -4,7 +4,7 @@ import {
   Network, Code2, Database, Workflow, Bot, BarChart3, Cloud, Layers, Cpu, Shield, 
   ArrowRight, Search, Zap, CheckCircle2, Terminal, Monitor, LayoutDashboard, BrainCircuit,
   Mail, Phone, FileText, Linkedin, Github, FileCode2, BookOpen, PenTool, Image, Video,
-  Briefcase, ExternalLink, Home, Box, Code
+  Briefcase, ExternalLink, Home, Box, Code, MoveLeft
 } from 'lucide-react';
 import './styles/App.css';
 import Dock from './components/Dock';
@@ -402,27 +402,45 @@ export default function App() {
           </div>
         </section>
 
-        {/* CREATIVE WORK */}
+        {/* CREATIVE PORTFOLIO - UPDATED UI */}
         <section id="creative">
-          <SectionHeading title="Creative Design" subtitle="Branding, visualization, and marketing assets." />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16">
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tight uppercase">Creative Portfolio</h2>
+            <a 
+              href="https://www.artstation.com/jayasudhanmuneeswaran" 
+              target="_blank" 
+              rel="noreferrer"
+              className="group flex items-center gap-3 px-6 py-3 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 uppercase text-xs font-bold tracking-widest"
+            >
+              View ArtStation 
+              <div className="w-8 h-8 rounded-full border border-current flex items-center justify-center group-hover:rotate-180 transition-transform duration-500">
+                <MoveLeft className="w-4 h-4" />
+              </div>
+            </a>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { label: "Marketing Campaign Design", img: "images/markettingposter.png" },
+              { label: "3D Digital Art", img: "images/3d.jpg" },
+              { label: "Campaign Design", img: "images/markettingposter.png" },
+              { label: "Product Visualization", img: "images/product.jpg" },
               { label: "Packaging Design", img: "images/packaging_design.png" },
-              { label: "3D Product Visualization", img: "images/product.jpg" },
-              { label: "3D Modeling", img: "images/3d.jpg" },
             ].map((work, i) => (
               <motion.div 
                 key={i} 
-                className="relative aspect-video overflow-hidden group border border-white/10 bg-zinc-900"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="relative aspect-square overflow-hidden group rounded-[2rem] bg-zinc-900"
               >
                 <img 
                   src={work.img} 
                   alt={work.label} 
-                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" 
+                  className="w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex items-end p-8">
-                  <h3 className="text-2xl font-medium text-white uppercase tracking-widest border-l-2 border-blue-500 pl-4">{work.label}</h3>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
+                  <span className="text-white font-medium uppercase tracking-widest text-sm">{work.label}</span>
                 </div>
               </motion.div>
             ))}
