@@ -4,19 +4,28 @@ import {
   Network, Code2, Database, Workflow, Bot, BarChart3, Cloud, Layers, Cpu, Shield, 
   ArrowRight, Search, Zap, CheckCircle2, Terminal, Monitor, LayoutDashboard, BrainCircuit,
   Mail, Phone, FileText, Linkedin, Github, FileCode2, BookOpen, PenTool, Image, Video,
-  Briefcase, ExternalLink, Home, Box, Code, MoveLeft
+  Briefcase, ExternalLink, Home, Box, Code, MoveLeft, Sparkles
 } from 'lucide-react';
 import './styles/App.css';
 import Dock from './components/Dock';
 
 // Reusable Components
 const SectionHeading = ({ title, subtitle }) => (
-  <div className="mb-16 md:mb-24 border-l-4 border-blue-500 pl-6">
+  <div className="mb-20 md:mb-32">
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      className="flex items-center gap-4 mb-6"
+    >
+      <div className="h-[1px] w-12 bg-blue-500/50"></div>
+      <span className="text-blue-400 text-xs font-mono tracking-[0.4em] uppercase">Discovery</span>
+    </motion.div>
     <motion.h2 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="text-4xl md:text-6xl font-light tracking-tight mb-4 uppercase tracking-widest"
+      className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40"
     >
       {title}
     </motion.h2>
@@ -26,7 +35,7 @@ const SectionHeading = ({ title, subtitle }) => (
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.1 }}
-        className="text-xl text-gray-400 font-light max-w-2xl"
+        className="text-xl text-gray-500 font-light max-w-3xl leading-relaxed"
       >
         {subtitle}
       </motion.p>
@@ -34,11 +43,56 @@ const SectionHeading = ({ title, subtitle }) => (
   </div>
 );
 
-const ParticleBackground = () => {
+const NeuralHeroBackground = () => {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900/40 via-zinc-950 to-black"></div>
-      <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIvPjwvc3ZnPg==')] opacity-30"></div>
+    <div className="absolute inset-0 z-0 overflow-hidden bg-[#050505]">
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ 
+        backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+        backgroundSize: '40px 40px' 
+      }}></div>
+      {/* Blueprint Dots */}
+      <div className="absolute inset-0 opacity-[0.05]" style={{ 
+        backgroundImage: `radial-gradient(#fff 1px, transparent 0)`,
+        backgroundSize: '40px 40px' 
+      }}></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/50 to-[#050505]"></div>
+    </div>
+  );
+};
+
+const TechMarquee = () => {
+  const techs = [
+    { name: "Python", icon: <FileCode2 className="w-5 h-5" /> },
+    { name: "FastAPI", icon: <Zap className="w-5 h-5" /> },
+    { name: "Docker", icon: <Box className="w-5 h-5" /> },
+    { name: "Kubernetes", icon: <Layers className="w-5 h-5" /> },
+    { name: "AWS", icon: <Cloud className="w-5 h-5" /> },
+    { name: "Terraform", icon: <Database className="w-5 h-5" /> },
+    { name: "MLflow", icon: <BarChart3 className="w-5 h-5" /> },
+    { name: "LangChain", icon: <BrainCircuit className="w-5 h-5" /> },
+    { name: "PyGenGuard", icon: <Shield className="w-5 h-5" /> },
+    { name: "React", icon: <Code className="w-5 h-5" /> },
+    { name: "GitHub Actions", icon: <Workflow className="w-5 h-5" /> },
+    { name: "Scikit-Learn", icon: <Cpu className="w-5 h-5" /> },
+    { name: "RAG Systems", icon: <Search className="w-5 h-5" /> },
+  ];
+
+  return (
+    <div className="relative w-full overflow-hidden py-10 border-y border-white/5 bg-white/[0.01]">
+      <div className="flex animate-marquee whitespace-nowrap">
+        {[...techs, ...techs].map((tech, i) => (
+          <div key={i} className="flex items-center gap-4 px-12 group cursor-default">
+            <div className="text-blue-500 group-hover:scale-125 transition-transform duration-500">
+              {tech.icon}
+            </div>
+            <span className="text-white/40 group-hover:text-white transition-colors text-[10px] font-mono uppercase tracking-[0.3em] font-bold">
+              {tech.name}
+            </span>
+            <div className="h-1 w-1 bg-white/10 rounded-none ml-4"></div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -117,108 +171,137 @@ export default function App() {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      // Accessibility: move focus to the section for screen readers
+      element.setAttribute('tabindex', '-1');
+      element.focus({ preventScroll: true });
     }
   };
 
   return (
-    <div className="bg-black text-white min-h-screen selection:bg-blue-500/30 font-sans">
+    <div className="bg-[#050505] text-white min-h-screen selection:bg-blue-500/30 font-sans tracking-tight">
       <div className="fixed top-0 left-0 w-full h-1 bg-zinc-900 z-50">
         <motion.div className="h-full bg-blue-500" style={{ scaleX: scrollYProgress, transformOrigin: "0%" }} />
       </div>
 
       {/* HERO SECTION */}
-      <section id="top" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-        <ParticleBackground />
+      <section id="top" className="relative min-h-screen flex flex-col overflow-hidden bg-[#050505]">
+        <NeuralHeroBackground />
         
-        <div className="max-w-7xl mx-auto px-6 w-full relative z-10 grid lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-8">
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 text-sm mb-8 uppercase tracking-widest font-semibold"
-            >
-              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-              AI Engineer & Product-Minded Builder
-            </motion.div>
+        {/* Main Content Area */}
+        <div className="flex-grow flex items-center relative z-10 pt-20 pb-16">
+          <div className="max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-12 gap-12 items-end">
             
-            <motion.h1 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-5xl md:text-7xl lg:text-8xl font-medium tracking-tighter leading-[1.1] mb-6 uppercase"
-            >
-              Building AI Systems <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">from Prototype to Product</span>
-            </motion.h1>
+            <div className="lg:col-span-7 flex flex-col items-start text-left pb-20">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="px-4 py-1.5 mb-12 border border-white/10 bg-white/[0.03] backdrop-blur-xl rounded-none flex items-center gap-3"
+              >
+                <span className="w-2 h-2 bg-blue-500 rounded-none"></span>
+                <span className="text-white/40 text-[10px] font-mono tracking-[0.2em] uppercase font-bold">AI Engineer & Product-Minded Builder</span>
+              </motion.div>
+              
+              <motion.h1 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+                className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-10 text-white uppercase"
+              >
+                Building AI<br/>
+                Systems<br/>
+                <span className="text-blue-500">From Prototype<br/>To Product</span>
+              </motion.h1>
 
-            <motion.p 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-xl md:text-2xl text-gray-400 max-w-3xl font-light leading-relaxed mb-10"
-            >
-              Focused on scalable AI systems, workflow automation, and data products that bridge the gap between engineering and user experience.
-            </motion.p>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-lg text-gray-500 max-w-xl leading-relaxed mb-12 font-light"
+              >
+                Focused on scalable AI systems, workflow automation, and data products that bridge the gap between engineering and user experience.
+              </motion.p>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="flex flex-wrap gap-4"
-            >
-              <button onClick={() => scrollToSection('systems')} className="px-8 py-4 bg-white text-black font-medium hover:bg-gray-200 transition-colors flex items-center gap-2 uppercase tracking-wider text-sm">
-                Technical Projects <ArrowRight className="w-4 h-4" />
-              </button>
-              <button onClick={() => scrollToSection('contact')} className="px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 transition-colors uppercase tracking-wider text-sm">
-                Contact
-              </button>
-            </motion.div>
-          </div>
-          
-          <div className="lg:col-span-4 hidden lg:block">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8 }}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="flex flex-col sm:flex-row items-center gap-6"
+              >
+                <button 
+                  onClick={() => scrollToSection('systems')} 
+                  aria-label="View Technical Projects"
+                  className="group px-8 py-5 bg-white text-black font-bold hover:bg-blue-500 hover:text-white transition-all duration-300 flex items-center gap-4 text-xs uppercase tracking-[0.2em] rounded-none"
+                >
+                  Technical Projects <ArrowRight className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => scrollToSection('contact')} 
+                  aria-label="Contact Jayasudhan"
+                  className="px-8 py-5 border border-white/20 text-white font-bold hover:bg-white/5 transition-all text-xs uppercase tracking-[0.2em] rounded-none"
+                >
+                  Contact Me
+                </button>
+              </motion.div>
+            </div>
+
+            {/* Visual Column */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.4 }}
-              className="relative w-full aspect-square border border-white/10 bg-gradient-to-br from-white/5 to-transparent overflow-hidden flex items-center justify-center group shadow-[0_0_50px_rgba(59,130,246,0.1)] hover:border-blue-500/50 transition-colors duration-500"
+              transition={{ duration: 1.2, delay: 0.2 }}
+              className="lg:col-span-5 hidden lg:flex flex-col items-center pb-20"
             >
-              <div className="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-              <img src="images/JayasudhanM.png" alt="Profile" className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-700" />
+              <div className="relative p-2 border border-white/10 bg-white/[0.02]">
+                <div className="w-[400px] h-[500px] bg-zinc-900 overflow-hidden grayscale contrast-125">
+                  <img src="images/JayasudhanM.png" alt="Jayasudhan Portrait" className="w-full h-full object-cover" />
+                </div>
+                <div className="mt-3 text-[10px] text-gray-500 font-mono uppercase tracking-[0.1em] text-center border-t border-white/5 pt-3">
+                  AI PORTRAIT: Jayasudhan (AI Business Transformation Engineer)
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
 
-        {/* METRICS STRIP */}
-        <motion.div 
-          style={{ opacity }}
-          className="absolute bottom-0 left-0 w-full border-t border-white/10 bg-black/80 backdrop-blur-md"
-        >
-          <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { label: "Shipped Systems", value: "5+" },
-              { label: "Managed Reach", value: "276K+" },
-              { label: "Latency Optimization", value: "Sub-second" },
-              { label: "Focus", value: "RAG & MLOps" }
-            ].map((metric, i) => (
-              <div key={i} className="flex flex-col border-l border-white/10 pl-6">
-                <span className="text-3xl font-medium text-white">{metric.value}</span>
-                <span className="text-xs text-blue-400 uppercase tracking-widest mt-1">{metric.label}</span>
+        {/* Bottom Metrics Bar */}
+        <div className="absolute bottom-0 left-0 w-full z-20 border-t border-white/5 bg-[#050505]/80 backdrop-blur-xl">
+          <div className="max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-3xl font-bold text-white leading-none">276K+</span>
+              <span className="text-[9px] text-gray-500 uppercase tracking-widest font-mono mt-2">People Managed & Reach</span>
+            </div>
+            
+            <div className="hidden md:flex items-center gap-1 border border-white/10 p-1 bg-white/[0.02]">
+              <button onClick={() => scrollToSection('top')} className="p-3 hover:bg-white/5 text-gray-400 hover:text-white transition-all"><Home className="w-5 h-5" /></button>
+              <button onClick={() => scrollToSection('systems')} className="p-3 hover:bg-white/5 text-gray-400 hover:text-white transition-all"><Cpu className="w-5 h-5" /></button>
+              <button onClick={() => scrollToSection('focus')} className="p-3 hover:bg-white/5 text-gray-400 hover:text-white transition-all"><Terminal className="w-5 h-5" /></button>
+              <button onClick={() => scrollToSection('contact')} className="p-3 hover:bg-white/5 text-gray-400 hover:text-white transition-all"><Mail className="w-5 h-5" /></button>
+            </div>
+
+            <div className="flex items-center gap-8">
+              <div className="flex flex-col text-right">
+                <span className="text-3xl font-bold text-white leading-none">32+</span>
+                <span className="text-[9px] text-gray-500 uppercase tracking-widest font-mono mt-2">AI Models Deployed</span>
               </div>
-            ))}
+              <Sparkles className="w-8 h-8 text-white/20" />
+            </div>
           </div>
-        </motion.div>
+        </div>
       </section>
+
 
       <div className="max-w-7xl mx-auto px-6 py-24 space-y-40">
         
-        {/* CURRENT FOCUS */}
-        <section id="focus">
-          <SectionHeading title="Core Competencies" subtitle="Technical focus areas in applied AI and data engineering." />
+        {/* CORE COMPETENCIES */}
+        <section id="focus" className="scroll-mt-32">
+          <SectionHeading title="Core Competencies" subtitle="Where AI engineering meets digital marketing and creative production." />
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-4">
               {[
                 "Production AI Systems", "RAG & LLM Applications", "AI Product Strategy",
-                "Workflow Automation", "MLOps & Deployment", "Analytics Systems"
+                "Digital Marketing & SEO", "Growth Analytics", "Brand & Creative Direction",
+                "Workflow Automation", "MLOps & Deployment", "3D Visualization"
               ].map((tag, i) => (
                 <motion.span 
                   key={i}
@@ -226,19 +309,28 @@ export default function App() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
-                  className="px-4 py-2 border border-blue-500/30 bg-blue-500/5 text-blue-200 uppercase text-xs tracking-wider font-semibold"
+                  className="px-5 py-2.5 border border-white/10 bg-white/[0.02] text-gray-400 uppercase text-[10px] tracking-[0.2em] font-bold hover:border-indigo-500/50 hover:text-indigo-300 transition-all cursor-default"
                 >
                   {tag}
                 </motion.span>
               ))}
             </div>
-            <div className="border border-white/5 p-8 bg-zinc-950">
-              <h3 className="text-blue-400 uppercase tracking-widest text-sm mb-4 font-mono">Status: active_development</h3>
-              <p className="text-gray-400 text-lg leading-relaxed">
-                Currently building high-throughput retrieval pipelines and refining deterministic security layers for GenAI applications. Focusing on reducing hallucination rates and optimizing inference costs.
+            <div className="border border-white/5 p-10 bg-white/[0.01] backdrop-blur-sm rounded-none">
+              <h3 className="text-indigo-400 uppercase tracking-[0.3em] text-[10px] mb-6 font-mono font-bold flex items-center gap-2">
+                <span className="w-2 h-2 bg-indigo-500 rounded-none animate-pulse"></span>
+                Status: active_transformation
+              </h3>
+              <p className="text-gray-400 text-lg leading-relaxed font-light">
+                Building at the intersection of AI engineering and business growth — shipping production ML pipelines, scaling digital audiences across YouTube and Instagram, and delivering creative assets that drive real engagement. Not just building AI, but transforming how businesses reach and serve people.
               </p>
             </div>
           </div>
+        </section>
+
+        {/* TECHNICAL ECOSYSTEM */}
+        <section id="tech-stack" className="scroll-mt-32">
+          <SectionHeading title="Technical Ecosystem" subtitle="The production-grade stack driving AI business transformation." />
+          <TechMarquee />
         </section>
 
         {/* CASE STUDIES */}
@@ -289,45 +381,54 @@ export default function App() {
             ].map((study, i) => (
               <motion.div 
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="group flex flex-col lg:flex-row gap-8 p-10 bg-zinc-950 border border-white/5 hover:border-blue-500/50 transition-colors"
+                transition={{ duration: 0.8, delay: i * 0.1 }}
+                className="group relative flex flex-col lg:flex-row gap-8 p-1 rounded-none bg-white/[0.02] border border-white/10 hover:border-indigo-500/30 transition-all duration-500 overflow-hidden"
               >
-                <div className="lg:w-1/3">
-                  <div className="text-xs font-mono text-cyan-400 mb-2 uppercase tracking-widest">{study.role}</div>
-                  <h3 className="text-3xl font-medium mb-6 uppercase">{study.title}</h3>
-                  <div className="flex flex-wrap gap-2 mb-8">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                
+                <div className="relative z-10 lg:w-1/3 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/5">
+                  <div className="text-[10px] font-mono text-indigo-400 mb-6 uppercase tracking-[0.4em]">{study.role}</div>
+                  <h3 className="text-4xl font-bold mb-8 tracking-tight leading-tight">{study.title}</h3>
+                  <div className="flex flex-wrap gap-2 mb-10">
                     {study.tech.map((t, j) => (
-                      <span key={j} className="text-xs px-2 py-1 bg-white/5 border border-white/10 text-gray-300 font-mono">{t}</span>
+                      <span key={j} className="text-[9px] px-3 py-1.5 bg-white/5 border border-white/10 text-gray-500 font-mono rounded-none uppercase tracking-widest">{t}</span>
                     ))}
                   </div>
-                  <div className="flex flex-col gap-3">
-                    <a href={study.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors uppercase text-sm font-semibold tracking-wider">
-                      <Github className="w-4 h-4" /> Repository
-                    </a>
-                    <a href={study.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors uppercase text-xs tracking-widest">
-                      <ExternalLink className="w-3 h-3" /> Live Demo
+                  <div className="flex flex-col gap-5">
+                    <a 
+                      href={study.link} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      aria-label={`View GitHub repository for ${study.title}`}
+                      className="inline-flex items-center gap-3 text-white hover:text-indigo-400 transition-colors text-[10px] font-bold tracking-[0.2em] uppercase focus:outline-none focus:text-indigo-400"
+                    >
+                      <Github className="w-5 h-5" /> Repository
                     </a>
                   </div>
                 </div>
-                <div className="lg:w-2/3 flex flex-col gap-6">
-                  <div>
-                    <h4 className="text-sm text-gray-500 uppercase tracking-widest mb-2 border-b border-white/10 pb-2">Problem</h4>
-                    <p className="text-gray-300 leading-relaxed">{study.problem}</p>
-                  </div>
-                  <div>
-                    <h4 className="text-sm text-gray-500 uppercase tracking-widest mb-2 border-b border-white/10 pb-2">Implementation</h4>
-                    <p className="text-gray-300 leading-relaxed">{study.solution}</p>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="p-4 bg-blue-500/5 border border-blue-500/20">
-                      <h4 className="text-xs text-blue-400 uppercase tracking-widest mb-2">Metrics</h4>
-                      <p className="text-white font-medium">{study.metrics}</p>
+
+                <div className="relative z-10 lg:w-2/3 flex flex-col gap-10 p-8 lg:p-12">
+                  <div className="grid md:grid-cols-2 gap-10">
+                    <div>
+                      <h4 className="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-4 font-bold">Problem Space</h4>
+                      <p className="text-gray-400 text-sm leading-relaxed font-light">{study.problem}</p>
                     </div>
-                    <div className="p-4 bg-white/5 border border-white/10">
-                      <h4 className="text-xs text-gray-400 uppercase tracking-widest mb-2">Trade-offs</h4>
-                      <p className="text-gray-300 text-sm">{study.tradeoff}</p>
+                    <div>
+                      <h4 className="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-4 font-bold">Invention</h4>
+                      <p className="text-gray-400 text-sm leading-relaxed font-light">{study.solution}</p>
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-6 mt-auto">
+                    <div className="p-6 bg-indigo-500/5 border border-indigo-500/10 rounded-none">
+                      <h4 className="text-[10px] text-indigo-400 uppercase tracking-[0.2em] mb-3 font-bold">Impact</h4>
+                      <p className="text-white text-sm font-medium leading-relaxed">{study.metrics}</p>
+                    </div>
+                    <div className="p-6 bg-white/[0.02] border border-white/5 rounded-none">
+                      <h4 className="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-3 font-bold">Engineering Trade-offs</h4>
+                      <p className="text-gray-400 text-xs leading-relaxed font-light">{study.tradeoff}</p>
                     </div>
                   </div>
                 </div>
@@ -337,41 +438,49 @@ export default function App() {
         </section>
 
         {/* EXPERIENCE TIMELINE */}
-        <section id="experience">
-          <SectionHeading title="Experience" subtitle="Professional history focusing on AI operations and product engineering." />
-          <div className="relative border-l border-white/10 ml-4 md:ml-8 space-y-12 pb-8">
+        <section id="experience" className="scroll-mt-32">
+          <SectionHeading title="Experience" subtitle="AI engineering, digital marketing, creative leadership — the full transformation stack." />
+          <div className="relative ml-4 md:ml-12 space-y-16 pb-12">
+            {/* Timeline Line */}
+            <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-indigo-500 via-indigo-500/20 to-transparent"></div>
+
             {experiences.map((exp, i) => (
               <motion.div 
                 key={i}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="relative pl-8 md:pl-12"
+                transition={{ duration: 0.8, delay: i * 0.1 }}
+                className="relative pl-12 group"
               >
-                <div className="absolute -left-[9px] top-1.5 w-4 h-4 bg-blue-500 border-4 border-black"></div>
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
-                  <h3 className="text-2xl font-medium uppercase tracking-wide">{exp.role}</h3>
-                  <div className="text-cyan-400 font-mono text-sm px-3 py-1 border border-cyan-500/30 bg-cyan-500/10 w-fit">
+                {/* Timeline Dot */}
+                <div className="absolute -left-[6px] top-2 w-3 h-3 rounded-none bg-indigo-500 border-2 border-[#050505] group-hover:scale-150 transition-transform duration-500 z-10 shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
+                
+                <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-8 gap-4">
+                  <div className="space-y-1">
+                    <h3 className="text-3xl font-bold tracking-tight text-white group-hover:text-indigo-400 transition-colors">{exp.role}</h3>
+                    <div className="flex items-center gap-3 text-indigo-300/80 font-mono text-[10px] uppercase tracking-[0.2em] font-bold">
+                      <Briefcase className="w-3 h-3" />
+                      {exp.company}
+                    </div>
+                  </div>
+                  <div className="text-gray-500 font-mono text-[10px] px-4 py-1.5 border border-white/10 bg-white/[0.02] rounded-none uppercase tracking-widest whitespace-nowrap">
                     {exp.date}
                   </div>
                 </div>
-                <div className="flex items-center gap-3 text-gray-400 mb-6 font-mono text-sm uppercase">
-                  <Briefcase className="w-4 h-4" />
-                  <span className="font-semibold text-blue-300">{exp.company}</span>
-                </div>
                 
-                <ul className="space-y-3 mb-6">
+                <ul className="space-y-4 mb-10 max-w-4xl">
                   {exp.bullets.map((bullet, j) => (
-                    <li key={j} className="text-gray-300 flex items-start gap-3">
-                      <span className="text-blue-500 mt-1.5 font-mono">▹</span>
-                      <span className="leading-relaxed">{bullet}</span>
+                    <li key={j} className="text-gray-400 flex items-start gap-4 text-sm leading-relaxed">
+                      <span className="text-indigo-500 mt-1.5 font-bold flex-shrink-0">/</span>
+                      <span className="font-light">{bullet}</span>
                     </li>
                   ))}
                 </ul>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3">
                   {exp.skills.map((skill, j) => (
-                    <span key={j} className="px-3 py-1 text-xs border border-white/10 text-gray-300 uppercase tracking-wider font-semibold">
+                    <span key={j} className="px-4 py-1.5 text-[9px] border border-white/5 bg-white/[0.01] text-gray-500 uppercase tracking-widest font-bold rounded-none group-hover:border-indigo-500/20 group-hover:text-gray-300 transition-all">
                       {skill}
                     </span>
                   ))}
@@ -381,26 +490,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* RESEARCH */}
-        <section id="research">
-          <SectionHeading title="Research Interests" subtitle="Exploring applied artificial intelligence in healthcare and multi-agent workflows." />
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              { title: "Healthcare AI", topic: "Clinical Risk Stratification Models" },
-              { title: "Edge Computing", topic: "IoT + Edge Computing AI" },
-              { title: "Multi-Agent Systems", topic: "Orchestration and Deterministic Guardrails" },
-              { title: "RAG Architectures", topic: "Vector Retrieval Optimization" }
-            ].map((pub, i) => (
-              <div key={i} className="flex gap-4 p-6 bg-zinc-950 border border-white/5 hover:border-white/20 transition-colors">
-                <div className="mt-1"><BookOpen className="text-blue-400 w-6 h-6" /></div>
-                <div>
-                  <h3 className="text-xl font-medium mb-1 uppercase tracking-wide">{pub.title}</h3>
-                  <p className="text-gray-400 font-mono text-sm">{pub.topic}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+
 
         {/* CREATIVE PORTFOLIO - UPDATED UI */}
         <section id="creative">
@@ -410,10 +500,10 @@ export default function App() {
               href="https://www.artstation.com/jayasudhanmuneeswaran" 
               target="_blank" 
               rel="noreferrer"
-              className="group flex items-center gap-3 px-6 py-3 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 uppercase text-xs font-bold tracking-widest"
+              className="group flex items-center gap-3 px-6 py-3 rounded-none border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 uppercase text-xs font-bold tracking-widest"
             >
               View ArtStation 
-              <div className="w-8 h-8 rounded-full border border-current flex items-center justify-center group-hover:rotate-180 transition-transform duration-500">
+              <div className="w-8 h-8 rounded-none border border-current flex items-center justify-center group-hover:rotate-180 transition-transform duration-500">
                 <MoveLeft className="w-4 h-4" />
               </div>
             </a>
@@ -432,7 +522,7 @@ export default function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="relative aspect-square overflow-hidden group rounded-[2rem] bg-zinc-900"
+                className="relative aspect-square overflow-hidden group rounded-none bg-zinc-900"
               >
                 <img 
                   src={work.img} 
@@ -450,8 +540,8 @@ export default function App() {
         {/* CONTACT */}
         <section id="contact" className="relative py-24 border-t border-white/10 text-center">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900/30 via-black to-black -z-10"></div>
-          <h2 className="text-5xl md:text-7xl font-medium tracking-tight mb-6 uppercase">Let's Build.</h2>
-          <p className="text-xl text-gray-400 mb-12 font-mono">Open for roles in AI Engineering, Product Management, and MLOps.</p>
+          <h2 className="text-5xl md:text-7xl font-medium tracking-tight mb-6 uppercase">Let's Transform.</h2>
+          <p className="text-xl text-gray-400 mb-12 font-mono">Open for roles in AI Business Transformation, Product Engineering, and Digital Growth.</p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <a href="mailto:jayasudhanmuneeswaran@gmail.com" className="px-8 py-4 bg-white text-black font-semibold hover:bg-gray-200 transition-colors w-full sm:w-auto flex justify-center items-center gap-2 uppercase tracking-widest text-sm">
