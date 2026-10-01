@@ -1,95 +1,151 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
+import { motion, useScroll } from 'framer-motion';
 import { 
-  Network, Code2, Database, Workflow, Bot, BarChart3, Cloud, Layers, Cpu, Shield, 
-  ArrowRight, Search, Zap, CheckCircle2, Terminal, Monitor, LayoutDashboard, BrainCircuit,
-  Mail, Phone, FileText, Linkedin, Github, FileCode2, BookOpen, PenTool, Image, Video,
-  Briefcase, ExternalLink, Home, Box, Code, MoveLeft, Sparkles
+  ArrowRight, CheckCircle2, Terminal, Cpu, Shield, 
+  Mail, Phone, Linkedin, Github, Briefcase, ExternalLink, Home, 
+  Target, Compass, SlidersHorizontal, ArrowUpRight, Sun, Moon, Asterisk,
+  Copy, Layers, GitBranch, Database, Zap, BookOpen, User, Award, Check
 } from 'lucide-react';
 import './styles/App.css';
 import Dock from './components/Dock';
+import AiCaseStudiesHub from './components/AiCaseStudiesHub';
+import PyGenGuardDiagram from './components/PyGenGuardDiagram';
+import PoultraFunnelDiagram from './components/PoultraFunnelDiagram';
+import ProductLifecycleDiagram from './components/ProductLifecycleDiagram';
 
-// Reusable Components
-const SectionHeading = ({ title, subtitle }) => (
-  <div className="mb-20 md:mb-32">
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      className="flex items-center gap-4 mb-6"
-    >
-      <div className="h-[1px] w-12 bg-blue-500/50"></div>
-      <span className="text-blue-400 text-xs font-mono tracking-[0.4em] uppercase">Discovery</span>
-    </motion.div>
-    <motion.h2 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40"
-    >
-      {title}
-    </motion.h2>
-    {subtitle && (
-      <motion.p 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.1 }}
-        className="text-xl text-gray-500 font-light max-w-3xl leading-relaxed"
-      >
-        {subtitle}
-      </motion.p>
-    )}
-  </div>
-);
-
-const NeuralHeroBackground = () => {
+// Coded before/after Android checkout mockups for the COD-conversion regression case study
+const AndroidCheckoutMockup = ({ isLight = true }) => {
+  const otp = ['2', '7', '4', '1'];
+  const kbRow = (n) => Array.from({ length: n });
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden bg-[#050505]">
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{ 
-        backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
-        backgroundSize: '40px 40px' 
-      }}></div>
-      {/* Blueprint Dots */}
-      <div className="absolute inset-0 opacity-[0.05]" style={{ 
-        backgroundImage: `radial-gradient(#fff 1px, transparent 0)`,
-        backgroundSize: '40px 40px' 
-      }}></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/50 to-[#050505]"></div>
+    <div className="grid sm:grid-cols-2 gap-6 my-6">
+      {/* BEFORE */}
+      <div className={`p-5 sm:p-6 border ${isLight ? 'bg-red-50/60 border-red-500/30' : 'bg-red-950/10 border-red-500/30'}`}>
+        <div className="flex items-center justify-between mb-4">
+          <span className="font-mono-tech text-xs font-bold uppercase tracking-widest text-red-500">Before · v4.12 Regression</span>
+          <span className="text-[10px] font-mono-tech px-2 py-0.5 bg-red-500/15 text-red-500 uppercase font-bold">COD 91% → 38%</span>
+        </div>
+        <div className="w-36 mx-auto border-[6px] border-black rounded-[1.6rem] bg-black p-1.5 shadow-lg">
+          <div className="relative bg-white rounded-[1.1rem] overflow-hidden h-64">
+            <div className="flex items-center justify-between px-3 pt-1.5 text-[7px] font-mono-tech text-black/70">
+              <span>9:41</span><span>●●● ▮</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-2 border-b border-black/5">
+              <div className="w-5 h-5 rounded bg-black/10 flex-none" />
+              <div className="text-[7px] text-black/80 font-semibold leading-tight">Wireless Earbuds<br/>₹1,499</div>
+            </div>
+            <div className="px-3 pt-2.5">
+              <div className="text-[6px] text-black/50 mb-1">Enter the 4-digit code</div>
+              <div className="flex gap-1">
+                {otp.map((d, i) => (
+                  <div key={i} className="w-5 h-6 border border-black/20 rounded flex items-center justify-center text-[8px] font-bold text-black">{d}</div>
+                ))}
+              </div>
+            </div>
+            <div className="absolute left-3 right-3 top-[102px]">
+              <div className="border border-dashed border-red-500 text-red-500 text-[6px] text-center py-1 rounded leading-tight">
+                "Confirm Order" — hidden below keyboard
+              </div>
+            </div>
+            <div className="absolute left-0 right-0 bottom-0 bg-gray-300/90" style={{ height: '58%' }}>
+              <div className="grid grid-cols-10 gap-[2px] p-1.5">
+                {kbRow(30).map((_, i) => <div key={i} className="h-2 bg-white rounded-[1px]" />)}
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul className="mt-4 space-y-1.5 text-[11px] text-red-600 font-mono-tech leading-snug">
+          <li>→ Keyboard covers ~60% of viewport on 720p, 1.25x font scale</li>
+          <li>→ "Confirm Order" primary CTA pushed below screen fold</li>
+          <li>→ Session replays: users tap repeatedly without finding button</li>
+        </ul>
+      </div>
+
+      {/* AFTER */}
+      <div className={`p-5 sm:p-6 border ${isLight ? 'bg-emerald-50/60 border-emerald-500/30' : 'bg-emerald-950/10 border-emerald-500/30'}`}>
+        <div className="flex items-center justify-between mb-4">
+          <span className="font-mono-tech text-xs font-bold uppercase tracking-widest text-emerald-600">After · Single-Line Hotfix</span>
+          <span className="text-[10px] font-mono-tech px-2 py-0.5 bg-emerald-500/15 text-emerald-600 uppercase font-bold">COD Rebounded to 89%</span>
+        </div>
+        <div className="w-36 mx-auto border-[6px] border-black rounded-[1.6rem] bg-black p-1.5 shadow-lg">
+          <div className="relative bg-white rounded-[1.1rem] overflow-hidden h-64">
+            <div className="flex items-center justify-between px-3 pt-1.5 text-[7px] font-mono-tech text-black/70">
+              <span>9:41</span><span>●●● ▮</span>
+            </div>
+            <div className="px-3 pt-2">
+              <div className="text-[6px] text-black/50 mb-1">Enter the 4-digit code</div>
+              <div className="flex gap-1 mb-2">
+                {otp.map((d, i) => (
+                  <div key={i} className="w-5 h-6 border border-emerald-400 rounded flex items-center justify-center text-[8px] font-bold text-black relative">
+                    {d}
+                    {i === 3 && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500 absolute -right-1 -top-1" />}
+                  </div>
+                ))}
+              </div>
+              <div className="bg-emerald-600 text-white text-[7.5px] font-bold text-center rounded py-1.5">Confirm Order</div>
+              <div className="text-[6px] text-emerald-600 font-mono-tech text-center mt-1">Auto-submitting on 4th digit…</div>
+            </div>
+            <div className="absolute left-0 right-0 bottom-0 bg-gray-300/90" style={{ height: '58%' }}>
+              <div className="grid grid-cols-10 gap-[2px] p-1.5">
+                {kbRow(30).map((_, i) => <div key={i} className="h-2 bg-white rounded-[1px]" />)}
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul className="mt-4 space-y-1.5 text-[11px] text-emerald-700 font-mono-tech leading-snug">
+          <li>→ Added windowSoftInputMode="adjustResize" to AndroidManifest</li>
+          <li>→ Auto-submit on 4th OTP digit: CTA removed from critical path</li>
+          <li>→ Low-dpi device regression tests permanently added to CI/CD</li>
+        </ul>
+      </div>
     </div>
   );
 };
 
-const TechMarquee = () => {
+// Reusable Editorial Section Heading
+const EditorialHeading = ({ number, title, subtitle, tag = "DISCOVERY", isLight = true }) => (
+  <div className={`mb-8 border-b pb-4 ${isLight ? 'border-black/15' : 'border-white/10'}`}>
+    <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+      <div className="flex items-center gap-3">
+        <span className="font-mono-tech text-xs text-[#d9623d] font-bold tracking-[0.3em] uppercase">
+          [{number}]
+        </span>
+        <span className="h-[1px] w-8 bg-[#d9623d]/60"></span>
+        <span className={`font-mono-tech text-xs tracking-[0.25em] uppercase font-bold ${isLight ? 'text-[#141418]' : 'text-white/60'}`}>
+          {tag}
+        </span>
+      </div>
+    </div>
+    
+    <h2 className={`text-3xl sm:text-4xl md:text-5xl font-display font-black tracking-tight uppercase mb-3 ${isLight ? 'text-[#141418]' : 'text-white'}`}>
+      {title}
+    </h2>
+    {subtitle && (
+      <p className={`font-serif-editorial italic text-base md:text-xl font-light max-w-4xl leading-relaxed ${isLight ? 'text-[#141418]' : 'text-gray-300'}`}>
+        "{subtitle}"
+      </p>
+    )}
+  </div>
+);
+
+// Tech Marquee Strip with editorial dividers
+const EditorialMarquee = ({ isLight = true }) => {
   const techs = [
-    { name: "Python", icon: <FileCode2 className="w-5 h-5" /> },
-    { name: "FastAPI", icon: <Zap className="w-5 h-5" /> },
-    { name: "Docker", icon: <Box className="w-5 h-5" /> },
-    { name: "Kubernetes", icon: <Layers className="w-5 h-5" /> },
-    { name: "AWS", icon: <Cloud className="w-5 h-5" /> },
-    { name: "Terraform", icon: <Database className="w-5 h-5" /> },
-    { name: "MLflow", icon: <BarChart3 className="w-5 h-5" /> },
-    { name: "LangChain", icon: <BrainCircuit className="w-5 h-5" /> },
-    { name: "PyGenGuard", icon: <Shield className="w-5 h-5" /> },
-    { name: "React", icon: <Code className="w-5 h-5" /> },
-    { name: "GitHub Actions", icon: <Workflow className="w-5 h-5" /> },
-    { name: "Scikit-Learn", icon: <Cpu className="w-5 h-5" /> },
-    { name: "RAG Systems", icon: <Search className="w-5 h-5" /> },
+    "Product Sense & Inversion", "Deterministic Safety Gates", "Sub-5ms Latency Budgets",
+    "PyGenGuard Architecture", "ChromaDB Semantic Caching", "Model Routing & Unit Economics",
+    "JIT Authentication Funnels", "SafeHatch Escrow Engine", "Root-Cause Funnel Segmentation",
+    "OpenTelemetry Spans", "FastAPI & LangGraph", "CI/CD Safety Evals"
   ];
 
   return (
-    <div className="relative w-full overflow-hidden py-10 border-y border-white/5 bg-white/[0.01]">
-      <div className="flex animate-marquee whitespace-nowrap">
+    <div className={`w-full overflow-hidden py-3.5 border-y ${isLight ? 'border-black/15 bg-[#f4efe6]' : 'border-white/10 bg-[#0c0c10]'}`}>
+      <div className="flex animate-marquee whitespace-nowrap items-center">
         {[...techs, ...techs].map((tech, i) => (
-          <div key={i} className="flex items-center gap-4 px-12 group cursor-default">
-            <div className="text-blue-500 group-hover:scale-125 transition-transform duration-500">
-              {tech.icon}
-            </div>
-            <span className="text-white/40 group-hover:text-white transition-colors text-[10px] font-mono uppercase tracking-[0.3em] font-bold">
-              {tech.name}
+          <div key={i} className="flex items-center gap-5 px-5 cursor-default">
+            <Asterisk className="w-3 h-3 text-[#d9623d]" />
+            <span className={`transition-colors text-[11px] font-mono-tech uppercase tracking-[0.22em] font-bold ${isLight ? 'text-[#141418] hover:text-[#d9623d]' : 'text-white/70 hover:text-white'}`}>
+              {tech}
             </span>
-            <div className="h-1 w-1 bg-white/10 rounded-none ml-4"></div>
           </div>
         ))}
       </div>
@@ -99,484 +155,695 @@ const TechMarquee = () => {
 
 export default function App() {
   const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
+  
+  // Theme state: defaults to elegant editorial LIGHT mode
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('jayasudhan_theme') || 'light';
+  });
 
-  const experiences = [
-    {
-      role: "Sourcing Analyst",
-      company: "GEP Worldwide",
-      date: "Jan 2026 - Present",
-      type: "Internship",
-      bullets: [
-        "Identified suppliers and documented sourcing workflows for operational requirements",
-        "Assisted in PMO discussions regarding automation of manual sourcing tasks",
-        "Prepared and cleaned sourcing datasets for internal utility evaluation",
-        "Tested AI-assisted procurement tools in real-world sourcing scenarios"
-      ],
-      skills: ["Sourcing Workflows", "Data Preparation"]
-    },
-    {
-      role: "AI Product Manager",
-      company: "TS Techy",
-      date: "Oct 2023 - Present",
-      type: "Full-time",
-      bullets: [
-        "Built production AI pipelines integrating ML models into business workflows",
-        "Implemented experiment tracking with MLflow and model evaluation metrics",
-        "Developed anomaly detection systems and real-time monitoring dashboards",
-        "Collaborated with engineering and delivery teams to ship client-facing systems",
-        "Handled Python-based ML solutions for healthcare-tech and IoT use cases"
-      ],
-      skills: ["AI Pipelines", "MLflow", "Product Strategy"]
-    },
-    {
-      role: "Head of Media and Creations",
-      company: "Avantaa'24 (SKCT)",
-      date: "Oct 2023 - Feb 2026",
-      type: "Part-time",
-      bullets: [
-        "Led media and creative delivery for large-scale college technical events",
-        "Coordinated design, content, and execution teams under tight timelines"
-      ],
-      skills: ["Project Management", "Operations"]
-    },
-    {
-      role: "Social Media Manager",
-      company: "Yummy Days with Kavitha",
-      date: "2022 - Present",
-      type: "Full-time",
-      bullets: [
-        "Managed digital presence for YouTube (160K+ subs) and Instagram (116K+ followers)",
-        "Optimized uploads using SEO (titles, tags, thumbnails) to improve reach",
-        "Analyzed platform analytics to implement data-driven content adjustments",
-        "Coordinated brand collaborations and promotional campaigns"
-      ],
-      skills: ["Growth Analytics", "SEO", "Content Strategy"]
-    },
-    {
-      role: "IoT with ML Intern",
-      company: "TwirlTact Technology Solutions",
-      date: "May 2025 - Jun 2025",
-      type: "Internship",
-      bullets: [
-        "Developed real-time IoT systems integrated with predictive ML models",
-        "Implemented data collection and preprocessing pipelines using microcontrollers",
-        "Deployed ML workflows to edge and cloud environments using Python"
-      ],
-      skills: ["Edge ML", "Python", "IoT"]
+  const [activeSection, setActiveSection] = useState('overview');
+  const [copyToast, setCopyToast] = useState(null);
+
+  const isLight = theme === 'light';
+
+  useEffect(() => {
+    localStorage.setItem('jayasudhan_theme', theme);
+    if (theme === 'light') {
+      document.body.classList.add('light-mode');
+    } else {
+      document.body.classList.remove('light-mode');
     }
-  ];
+  }, [theme]);
+
+  // Clean up static #/casestudy/... from URL on load and set clean dynamic hash tracking
+  useEffect(() => {
+    const rawHash = window.location.hash;
+    if (rawHash && rawHash.includes('casestudy')) {
+      // Clean up the static case study hash to clean section link
+      window.history.replaceState(null, '', `${window.location.pathname}#artifacts`);
+      setActiveSection('artifacts');
+      setTimeout(() => {
+        const el = document.getElementById('artifacts');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    } else if (rawHash) {
+      const cleanId = rawHash.replace('#', '');
+      setActiveSection(cleanId);
+    }
+
+    // Scroll spy: update active section and window URL hash dynamically as user scrolls
+    const sections = ['overview', 'mindset', 'artifacts', 'teardown', 'experience', 'creative', 'contact'];
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 200;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= scrollPos) {
+          if (activeSection !== sections[i]) {
+            setActiveSection(sections[i]);
+            if (window.location.hash !== `#${sections[i]}`) {
+              window.history.replaceState(null, '', `#${sections[i]}`);
+            }
+          }
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeSection]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
   const scrollToSection = (id) => {
+    setActiveSection(id);
+    window.history.replaceState(null, '', `#${id}`);
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      // Accessibility: move focus to the section for screen readers
-      element.setAttribute('tabindex', '-1');
-      element.focus({ preventScroll: true });
     }
   };
 
+  const handleCopyBlurb = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopyToast("Copied to clipboard!");
+      setTimeout(() => setCopyToast(null), 3000);
+    });
+  };
+
+  // Structured Work Experience Data
+  const experiences = [
+    {
+      num: "01",
+      role: "Co-Founder & AI Product Manager",
+      company: "TS Techy",
+      date: "Oct 2023 – Present · 3 yrs",
+      type: "Full-time · Remote",
+      bullets: [
+        "Led 0→1 development of 4 production GenAI systems from problem discovery, PRD definition, and architecture schemas to live telemetry.",
+        "Founded PyGenGuard, an open-source deterministic AI safety framework blocking ~95% of tested prompt injection attacks at <5ms latency without network calls.",
+        "Architected semantic caching and model routing across RAG pipelines, cutting inference token expenditures by 40–60% and median latency by 57%."
+      ],
+      skills: ["Product Strategy", "PRDs", "Deterministic AI Safety", "Model Routing", "Semantic Caching", "FastAPI"]
+    },
+    {
+      num: "02",
+      role: "Sourcing Analyst — Agentic AI Focused",
+      company: "GEP Worldwide",
+      date: "Jan 2026 – Present · 9 mos",
+      type: "Internship · Greater Coimbatore Area · On-site",
+      bullets: [
+        "Engineered custom LLM automation workflows and agentic pipelines for supplier discovery, eliminating 15+ hours/week of manual data gathering.",
+        "Translated procurement SOPs into structured AI product specifications and validation scripts, cutting the specific demand-to-allocation search step ~70% (from 3–4 days to 1–2 hours).",
+        "Designed human-in-the-loop review gates across high-volume vendor catalogs to ensure compliance and prevent inaccurate allocations."
+      ],
+      skills: ["Agentic AI", "Enterprise SOP Automation", "Human-in-the-Loop", "Turnaround Optimization"]
+    },
+    {
+      num: "03",
+      role: "IoT with ML Intern",
+      company: "TwirlTact Technology Solutions",
+      date: "May 2025 – Jun 2025 · 2 mos",
+      type: "Internship · Coimbatore South · On-site",
+      bullets: [
+        "Developed machine learning telemetry models for IoT sensor data, implementing real-time ingestion pipelines and threshold anomaly detection in Python."
+      ],
+      skills: ["Python", "MLOps", "Real-Time Telemetry", "Anomaly Detection"]
+    },
+    {
+      num: "04",
+      role: "Head of Media & Operations",
+      company: "Avantaa'24 (SKCT)",
+      date: "Oct 2023 – Feb 2026",
+      type: "Cross-Functional Leadership",
+      bullets: [
+        "Orchestrated brand narrative, digital assets, and live technical demonstrations driving high engagement across 10,000+ attendees under strict delivery deadlines."
+      ],
+      skills: ["Cross-Functional Leadership", "Operations", "Stakeholder Management"]
+    }
+  ];
+
   return (
-    <div className="bg-[#050505] text-white min-h-screen selection:bg-blue-500/30 font-sans tracking-tight">
-      <div className="fixed top-0 left-0 w-full h-1 bg-zinc-900 z-50">
-        <motion.div className="h-full bg-blue-500" style={{ scaleX: scrollYProgress, transformOrigin: "0%" }} />
+    <div className={`min-h-screen font-sans bg-grain relative transition-colors duration-300 ${isLight ? 'bg-[#faf7f2] text-[#141418] selection:bg-[#d9623d]/20 selection:text-[#141418]' : 'bg-[#070709] text-white selection:bg-[#d9623d]/40 selection:text-white'}`}>
+      
+      {/* Top Reading Progress Bar */}
+      <div className={`fixed top-0 left-0 w-full h-[2px] z-50 ${isLight ? 'bg-[#e5dfd5]' : 'bg-zinc-900'}`}>
+        <motion.div className="h-full bg-[#d9623d]" style={{ scaleX: scrollYProgress, transformOrigin: "0%" }} />
       </div>
 
-      {/* HERO SECTION */}
-      <section id="top" className="relative min-h-screen flex flex-col overflow-hidden bg-[#050505]">
-        <NeuralHeroBackground />
-        
-        {/* Main Content Area */}
-        <div className="flex-grow flex items-center relative z-10 pt-20 pb-16">
-          <div className="max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-12 gap-12 items-end">
-            
-            <div className="lg:col-span-7 flex flex-col items-start text-left pb-20">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                className="px-4 py-1.5 mb-12 border border-white/10 bg-white/[0.03] backdrop-blur-xl rounded-none flex items-center gap-3"
-              >
-                <span className="w-2 h-2 bg-blue-500 rounded-none"></span>
-                <span className="text-white/40 text-[10px] font-mono tracking-[0.2em] uppercase font-bold">AI Engineer & Product-Minded Builder</span>
-              </motion.div>
-              
-              <motion.h1 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-                className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-10 text-white uppercase"
-              >
-                Building AI<br/>
-                Systems<br/>
-                <span className="text-blue-500">From Prototype<br/>To Product</span>
-              </motion.h1>
+      {/* EDITORIAL TOP NAVIGATION BAR */}
+      <header className={`w-full border-b sticky top-0 z-40 backdrop-blur-md transition-colors ${isLight ? 'border-black/10 bg-[#faf7f2]/90' : 'border-white/10 bg-[#070709]/90'}`}>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className={`font-display font-black text-xl tracking-tighter uppercase flex items-center gap-1.5 ${isLight ? 'text-[#141418]' : 'text-white'}`}>
+              <Asterisk className="w-4 h-4 text-[#d9623d]" /> Jayasudhan.
+            </span>
+            <span className={`hidden sm:inline-block px-2.5 py-0.5 border text-[9px] font-mono-tech uppercase tracking-widest font-bold ${isLight ? 'border-black/20 bg-white text-[#141418]' : 'border-white/10 bg-white/5 text-white/70'}`}>
+              AI PM • 0→1 BUILDER
+            </span>
+          </div>
 
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-lg text-gray-500 max-w-xl leading-relaxed mb-12 font-light"
+          <nav className="hidden md:flex items-center gap-6 text-xs font-mono-tech tracking-widest uppercase font-semibold">
+            {[
+              { id: 'overview', label: 'Overview' },
+              { id: 'mindset', label: 'Mindset' },
+              { id: 'artifacts', label: 'Artifacts' },
+              { id: 'teardown', label: 'Teardown' },
+              { id: 'experience', label: 'Experience' },
+              { id: 'creative', label: 'Creative' },
+              { id: 'contact', label: 'Contact' }
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`transition-colors py-1 relative ${
+                  activeSection === item.id
+                    ? 'text-[#d9623d] font-bold'
+                    : isLight
+                    ? 'text-[#141418] hover:text-[#d9623d]'
+                    : 'text-white/60 hover:text-white'
+                }`}
               >
-                Focused on scalable AI systems, workflow automation, and data products that bridge the gap between engineering and user experience.
-              </motion.p>
+                {item.label}
+                {activeSection === item.id && (
+                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#d9623d]" />
+                )}
+              </button>
+            ))}
+          </nav>
 
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="flex flex-col sm:flex-row items-center gap-6"
-              >
-                <button 
-                  onClick={() => scrollToSection('systems')} 
-                  aria-label="View Technical Projects"
-                  className="group px-8 py-5 bg-white text-black font-bold hover:bg-blue-500 hover:text-white transition-all duration-300 flex items-center gap-4 text-xs uppercase tracking-[0.2em] rounded-none"
-                >
-                  Technical Projects <ArrowRight className="w-4 h-4" />
-                </button>
-                <button 
-                  onClick={() => scrollToSection('contact')} 
-                  aria-label="Contact Jayasudhan"
-                  className="px-8 py-5 border border-white/20 text-white font-bold hover:bg-white/5 transition-all text-xs uppercase tracking-[0.2em] rounded-none"
-                >
-                  Contact Me
-                </button>
-              </motion.div>
-            </div>
-
-            {/* Visual Column */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.2 }}
-              className="lg:col-span-5 hidden lg:flex flex-col items-center pb-20"
+          <div className="flex items-center gap-3">
+            {/* Light / Dark Mode Switcher */}
+            <button 
+              onClick={toggleTheme}
+              aria-label="Toggle Light / Dark Mode"
+              className={`p-2 border transition-all flex items-center gap-1.5 text-xs font-mono-tech uppercase font-bold tracking-wider ${isLight ? 'border-[#141418] bg-white hover:bg-black/5 text-[#141418]' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
             >
-              <div className="relative p-2 border border-white/10 bg-white/[0.02]">
-                <div className="w-[400px] h-[500px] bg-zinc-900 overflow-hidden grayscale contrast-125">
-                  <img src="images/JayasudhanM.png" alt="Jayasudhan Portrait" className="w-full h-full object-cover" />
-                </div>
-                <div className="mt-3 text-[10px] text-gray-500 font-mono uppercase tracking-[0.1em] text-center border-t border-white/5 pt-3">
-                  AI PORTRAIT: Jayasudhan (AI Business Transformation Engineer)
-                </div>
-              </div>
-            </motion.div>
+              {isLight ? <Moon className="w-3.5 h-3.5 text-[#d9623d]" /> : <Sun className="w-3.5 h-3.5 text-[#f59e0b]" />}
+              <span className="hidden sm:inline-block text-[10px]">{isLight ? 'Dark' : 'Light'}</span>
+            </button>
+
+            <a 
+              href="mailto:jayasudhanmuneeswaran@gmail.com"
+              className="pm-btn-primary !py-2 !px-4"
+            >
+              <span>Get In Touch</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
           </div>
         </div>
+      </header>
 
-        {/* Bottom Metrics Bar */}
-        <div className="absolute bottom-0 left-0 w-full z-20 border-t border-white/5 bg-[#050505]/80 backdrop-blur-xl">
-          <div className="max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-3xl font-bold text-white leading-none">276K+</span>
-              <span className="text-[9px] text-gray-500 uppercase tracking-widest font-mono mt-2">People Managed & Reach</span>
+      {/* HERO SECTION: REFINED EDITORIAL ARCHITECTURAL LAYOUT */}
+      <section id="overview" className={`relative overflow-hidden pt-8 pb-12 border-b scroll-mt-24 ${isLight ? 'border-black/15' : 'border-white/10'}`}>
+        
+        {/* Giant Backdrop Outline Typography */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-full text-center pointer-events-none select-none z-0 overflow-hidden opacity-[0.08]">
+          <span className="font-display font-black text-[16vw] leading-none uppercase tracking-tighter text-stroke">
+            PRODUCT
+          </span>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          
+          {/* Top Status & Education Pill */}
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+            <div className={`flex items-center gap-2 px-3 py-1 border text-[10px] font-mono-tech uppercase tracking-widest ${isLight ? 'border-black/20 bg-white text-[#141418] font-bold shadow-sm' : 'border-white/10 bg-white/5 text-white/70'}`}>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Open for AI Product Manager & 0→1 Technical Roles
             </div>
+            <div className={`text-[10px] font-mono-tech uppercase tracking-widest flex items-center gap-2 font-semibold ${isLight ? 'text-[#141418]' : 'text-white/60'}`}>
+              <Award className="w-3.5 h-3.5 text-[#d9623d]" />
+              <span>SKCT • Affiliated with IIT Ropar • Anabin H+ Recognized</span>
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-10 items-center">
             
-            <div className="hidden md:flex items-center gap-1 border border-white/10 p-1 bg-white/[0.02]">
-              <button onClick={() => scrollToSection('top')} className="p-3 hover:bg-white/5 text-gray-400 hover:text-white transition-all"><Home className="w-5 h-5" /></button>
-              <button onClick={() => scrollToSection('systems')} className="p-3 hover:bg-white/5 text-gray-400 hover:text-white transition-all"><Cpu className="w-5 h-5" /></button>
-              <button onClick={() => scrollToSection('focus')} className="p-3 hover:bg-white/5 text-gray-400 hover:text-white transition-all"><Terminal className="w-5 h-5" /></button>
-              <button onClick={() => scrollToSection('contact')} className="p-3 hover:bg-white/5 text-gray-400 hover:text-white transition-all"><Mail className="w-5 h-5" /></button>
+            {/* Left Column: Bio Narrative */}
+            <div className="lg:col-span-7 flex flex-col items-start text-left">
+              
+              <div className="font-serif-editorial italic text-lg sm:text-xl text-[#d9623d] font-normal mb-1">
+                Portfolio & Engineering Schematics
+              </div>
+
+              <h1 className={`text-4xl sm:text-6xl md:text-7xl font-display font-black tracking-tight leading-[0.92] uppercase mb-5 ${isLight ? 'text-[#141418]' : 'text-white'}`}>
+                Jayasudhan<br/>
+                <span className="text-stroke">Muneeswaran</span>
+              </h1>
+
+              <div className={`inline-block px-3 py-1 mb-6 border-l-2 border-[#d9623d] text-xs sm:text-sm font-mono-tech uppercase tracking-widest font-semibold ${isLight ? 'bg-white border border-black/10 text-[#141418] shadow-sm' : 'bg-white/[0.02] text-white/80'}`}>
+                AI Product Manager • Technical PM (AI/ML) • 0→1 System Builder
+              </div>
+
+              {/* Bio Statement */}
+              <div className={`space-y-4 max-w-2xl leading-relaxed text-sm mb-8 ${isLight ? 'text-[#141418] font-normal' : 'text-gray-300 font-light'}`}>
+                <p>
+                  Turning ambiguous operational friction into deployed production systems. With a technical background in Artificial Intelligence & Data Science (Sri Krishna College of Technology, affiliated with IIT Ropar), I combine rigorous problem discovery with hands-on systems architecture—defining PRDs, designing stateful agentic workflows, benchmarking deterministic safety gates, and managing unit economics in live production.
+                </p>
+                <p className={`font-serif-editorial italic text-base border-l-2 pl-4 ${isLight ? 'text-[#141418] border-black/40 font-medium' : 'text-white/90 border-white/20'}`}>
+                  "I don't just spec features—I inspect latency bottlenecks, validate token margins, and build working prototypes that ground strategy into measurable business impact."
+                </p>
+              </div>
+
+              {/* Direct Section Anchors: Unified PM Buttons */}
+              <div className="flex flex-wrap items-center gap-3">
+                <button 
+                  onClick={() => scrollToSection('artifacts')} 
+                  className="pm-btn-primary group"
+                >
+                  Inspect Production Artifacts
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </button>
+                <button 
+                  onClick={() => scrollToSection('mindset')} 
+                  className="pm-btn-secondary"
+                >
+                  Product Mindset
+                </button>
+                <button 
+                  onClick={() => scrollToSection('teardown')} 
+                  className="pm-btn-secondary"
+                >
+                  53-Pt UX Teardown
+                </button>
+              </div>
             </div>
 
-            <div className="flex items-center gap-8">
-              <div className="flex flex-col text-right">
-                <span className="text-3xl font-bold text-white leading-none">32+</span>
-                <span className="text-[9px] text-gray-500 uppercase tracking-widest font-mono mt-2">AI Models Deployed</span>
+            {/* Right Column: Framed Portrait */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
+              <div className={`relative z-10 w-[270px] sm:w-[320px] h-[340px] sm:h-[400px] border shadow-xl overflow-hidden grayscale contrast-125 ${isLight ? 'bg-white border-black/20' : 'bg-zinc-950 border-white/20'}`}>
+                <img 
+                  src="images/JayasudhanM.png" 
+                  alt="Jayasudhan Muneeswaran - AI Product Manager" 
+                  className="w-full h-full object-cover" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"></div>
+                <div className="absolute bottom-4 left-4 right-4 text-left">
+                  <div className="text-[9px] font-mono-tech text-[#d9623d] uppercase tracking-[0.2em] font-bold">AI PRODUCT MANAGER</div>
+                  <div className="text-sm font-display font-bold text-white uppercase">Jayasudhan Muneeswaran</div>
+                  <div className="text-[9px] font-mono-tech text-white/60 uppercase">SKCT • Affiliated with IIT Ropar</div>
+                </div>
               </div>
-              <Sparkles className="w-8 h-8 text-white/20" />
             </div>
+
           </div>
         </div>
       </section>
 
+      {/* METRICS & DELIVERED IMPACT STRIP */}
+      <section className={`w-full border-b ${isLight ? 'border-black/15 bg-[#f5efe6]' : 'border-white/10 bg-[#0c0c10]'}`}>
+        <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className={`border-r pr-6 ${isLight ? 'border-black/15' : 'border-white/10'}`}>
+            <span className={`font-display text-2xl sm:text-3xl font-black block ${isLight ? 'text-[#141418]' : 'text-white'}`}>4 SYSTEMS</span>
+            <span className="font-mono-tech text-[10px] text-[#d9623d] uppercase tracking-widest font-bold block mt-1">Shipped in Production</span>
+            <span className={`text-[11px] font-medium mt-0.5 block ${isLight ? 'text-[#141418]' : 'text-white/40'}`}>0→1 enterprise & developer deployments</span>
+          </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-24 space-y-40">
+          <div className={`border-r pr-6 ${isLight ? 'border-black/15' : 'border-white/10'}`}>
+            <span className={`font-display text-2xl sm:text-3xl font-black block ${isLight ? 'text-[#141418]' : 'text-white'}`}>&lt;5ms / ~95%</span>
+            <span className={`font-mono-tech text-[10px] uppercase tracking-widest font-bold block mt-1 ${isLight ? 'text-[#141418]' : 'text-white/70'}`}>Runtime Safety Defense</span>
+            <span className={`text-[11px] font-medium mt-0.5 block ${isLight ? 'text-[#141418]' : 'text-white/40'}`}>PyGenGuard sub-5ms injection barrier</span>
+          </div>
+
+          <div className={`border-r pr-6 ${isLight ? 'border-black/15' : 'border-white/10'}`}>
+            <span className={`font-display text-2xl sm:text-3xl font-black block ${isLight ? 'text-[#141418]' : 'text-white'}`}>68% → 14%</span>
+            <span className={`font-mono-tech text-[10px] uppercase tracking-widest font-bold block mt-1 ${isLight ? 'text-[#141418]' : 'text-white/70'}`}>Funnel Drop-Off Slash</span>
+            <span className={`text-[11px] font-medium mt-0.5 block ${isLight ? 'text-[#141418]' : 'text-white/40'}`}>Poultra 7 lazy auth & vernacular UX</span>
+          </div>
+
+          <div>
+            <span className={`font-display text-2xl sm:text-3xl font-black block ${isLight ? 'text-[#141418]' : 'text-white'}`}>15+ hrs/wk</span>
+            <span className={`font-mono-tech text-[10px] uppercase tracking-widest font-bold block mt-1 ${isLight ? 'text-[#141418]' : 'text-white/70'}`}>Saved per Ops Team</span>
+            <span className={`text-[11px] font-medium mt-0.5 block ${isLight ? 'text-[#141418]' : 'text-white/40'}`}>Enterprise SOP & procurement automation</span>
+          </div>
+        </div>
+      </section>
+
+      {/* TECH MARQUEE */}
+      <EditorialMarquee isLight={isLight} />
+
+      {/* MAIN CONTENT CONTAINER */}
+      <div className="max-w-7xl mx-auto px-6 py-10 space-y-14">
         
-        {/* CORE COMPETENCIES */}
-        <section id="focus" className="scroll-mt-32">
-          <SectionHeading title="Core Competencies" subtitle="Where AI engineering meets digital marketing and creative production." />
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="flex flex-wrap gap-4">
-              {[
-                "Production AI Systems", "RAG & LLM Applications", "AI Product Strategy",
-                "Digital Marketing & SEO", "Growth Analytics", "Brand & Creative Direction",
-                "Workflow Automation", "MLOps & Deployment", "3D Visualization"
-              ].map((tag, i) => (
-                <motion.span 
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                  className="px-5 py-2.5 border border-white/10 bg-white/[0.02] text-gray-400 uppercase text-[10px] tracking-[0.2em] font-bold hover:border-indigo-500/50 hover:text-indigo-300 transition-all cursor-default"
-                >
-                  {tag}
-                </motion.span>
-              ))}
+        {/* SECTION 01: PRODUCT MINDSET & OPERATING PRINCIPLES */}
+        <section id="mindset" className="scroll-mt-24">
+          <EditorialHeading 
+            number="01"
+            tag="OPERATING FRAMEWORK"
+            title="Product Mindset & Operating Principles"
+            subtitle="Real product management begins with deep customer empathy and ends with deterministic unit economics. Here is how I structure and deliver production AI systems."
+            isLight={isLight}
+          />
+          <ProductLifecycleDiagram isLight={isLight} />
+        </section>
+
+        {/* SECTION 02: PRODUCTION ARTIFACTS & SYSTEM SCHEMATICS */}
+        <section id="artifacts" className="scroll-mt-24">
+          <EditorialHeading 
+            number="02"
+            tag="PRODUCTION ARTIFACTS"
+            title="Selected Production Systems"
+            subtitle="Visual architecture schematics and deterministic impact metrics across open-source infrastructure, high-throughput caching, and high-velocity commerce."
+            isLight={isLight}
+          />
+
+          <div className="space-y-8">
+            
+            {/* Artifact 1: PyGenGuard */}
+            <div className={`border p-6 sm:p-8 transition-all ${isLight ? 'bg-white border-black/15 shadow-sm' : 'bg-[#0c0c10] border-white/10'}`}>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4 mb-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="font-mono-tech text-xs text-[#d9623d] font-bold uppercase">[Artifact 01]</span>
+                    <span className={`text-[10px] font-mono-tech px-2 py-0.5 border uppercase font-bold ${isLight ? 'border-black/20 bg-black/5 text-[#141418]' : 'border-white/10 bg-white/5 text-white/70'}`}>AI Safety • Developer Infrastructure</span>
+                  </div>
+                  <h3 className={`text-2xl sm:text-3xl font-display font-black uppercase ${isLight ? 'text-[#141418]' : 'text-white'}`}>
+                    PyGenGuard — Deterministic GenAI Runtime Governance Layer
+                  </h3>
+                  <p className={`font-serif-editorial italic text-sm mt-1 font-medium ${isLight ? 'text-[#141418]' : 'text-gray-400'}`}>
+                    "Sub-5ms prompt injection & data exfiltration defense middleware without LLM-as-a-judge latency."
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <a 
+                    href="https://pypi.org/project/pygenguard/" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="pm-btn-primary !py-2 !px-4"
+                  >
+                    PyPI Release <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Interactive Visual Architecture Diagram */}
+              <PyGenGuardDiagram isLight={isLight} />
+
+              {/* Verified Infographic Asset */}
+              <div className={`p-4 border mt-6 flex flex-col md:flex-row items-center gap-6 ${isLight ? 'bg-[#faf7f2] border-black/15' : 'bg-black/20 border-white/10'}`}>
+                <div className="w-full md:w-1/3 max-h-48 overflow-hidden border border-black/15">
+                  <img 
+                    src="images/pygenguard_jev_architecture.jpg" 
+                    alt="PyGenGuard JEV Architecture Infographic" 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+                <div className="w-full md:w-2/3 space-y-2">
+                  <span className="font-mono-tech text-[10px] uppercase tracking-widest text-[#d9623d] font-bold">
+                    Architecture Specification
+                  </span>
+                  <h4 className={`font-display font-bold uppercase text-sm ${isLight ? 'text-[#141418]' : 'text-white'}`}>Deterministic Security Inversion</h4>
+                  <p className={`text-xs leading-relaxed font-medium ${isLight ? 'text-[#141418]' : 'text-gray-300'}`}>
+                    Traditional guardrails rely on secondary LLM judges, adding 300–500ms of latency and non-trivial token billing. PyGenGuard inverts this paradigm by enforcing compiled Aho-Corasick string tries and vector distance thresholds directly in memory, stopping 95% of attacks before external APIs are invoked.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="border border-white/5 p-10 bg-white/[0.01] backdrop-blur-sm rounded-none">
-              <h3 className="text-indigo-400 uppercase tracking-[0.3em] text-[10px] mb-6 font-mono font-bold flex items-center gap-2">
-                <span className="w-2 h-2 bg-indigo-500 rounded-none animate-pulse"></span>
-                Status: active_transformation
-              </h3>
-              <p className="text-gray-400 text-lg leading-relaxed font-light">
-                Building at the intersection of AI engineering and business growth — shipping production ML pipelines, scaling digital audiences across YouTube and Instagram, and delivering creative assets that drive real engagement. Not just building AI, but transforming how businesses reach and serve people.
-              </p>
+
+            {/* Artifact 02: Poultra 7 */}
+            <div className={`border p-6 sm:p-8 transition-all ${isLight ? 'bg-white border-black/15 shadow-sm' : 'bg-[#0c0c10] border-white/10'}`}>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4 mb-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="font-mono-tech text-xs text-[#d9623d] font-bold uppercase">[Artifact 02]</span>
+                    <span className={`text-[10px] font-mono-tech px-2 py-0.5 border uppercase font-bold ${isLight ? 'border-black/20 bg-black/5 text-[#141418]' : 'border-white/10 bg-white/5 text-white/70'}`}>Marketplace Architecture • UX Accessibility • Escrow</span>
+                  </div>
+                  <h3 className={`text-2xl sm:text-3xl font-display font-black uppercase ${isLight ? 'text-[#141418]' : 'text-white'}`}>
+                    Poultra 7 — High-Velocity Poultry E-Commerce & Escrow
+                  </h3>
+                  <p className={`font-serif-editorial italic text-sm mt-1 font-medium ${isLight ? 'text-[#141418]' : 'text-gray-400'}`}>
+                    "SaaS B2B marketplace slashing Step 0 drop-off from 68% to 14% via lazy auth, vernacular UX, and SafeHatch Escrow."
+                  </p>
+                </div>
+              </div>
+
+              {/* Interactive Poultra Funnel Diagram */}
+              <PoultraFunnelDiagram isLight={isLight} />
+            </div>
+
+          </div>
+
+          {/* Interactive Google-Level AI Case Studies Hub */}
+          <AiCaseStudiesHub isLight={isLight} />
+        </section>
+
+        {/* SECTION 03: ROOT-CAUSE TEARDOWN (53-POINT CONVERSION REGRESSION) */}
+        <section id="teardown" className="scroll-mt-24">
+          <EditorialHeading 
+            number="03"
+            tag="ROOT-CAUSE TEARDOWN"
+            title="A 53-Point Conversion Drop, Traced to One Line"
+            subtitle="COD conversion on Tier-2/3 Android devices regressed from 91% down to 38% after release v4.12. Here is the visual diagnostic and the single-line hotfix."
+            isLight={isLight}
+          />
+
+          <AndroidCheckoutMockup isLight={isLight} />
+
+          {/* Metric Comparison & Screenshot Infographic */}
+          <div className="grid md:grid-cols-12 gap-6 items-center mt-6">
+            <div className={`md:col-span-4 border p-2 ${isLight ? 'bg-white border-black/15 shadow-sm' : 'bg-black/20 border-white/10'}`}>
+              <img 
+                src="images/checkout_ui_light.jpg" 
+                alt="Checkout UI Teardown Screen" 
+                className="w-full h-auto object-cover border border-black/10" 
+              />
+              <span className={`text-[10px] font-mono-tech uppercase block text-center mt-2 font-bold ${isLight ? 'text-[#141418]' : 'text-white/60'}`}>
+                Live Checkout Screen Audit
+              </span>
+            </div>
+
+            <div className="md:col-span-8 space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className={`p-3 border ${isLight ? 'bg-[#faf7f2] border-black/15 shadow-sm' : 'bg-white/5 border-white/10'}`}>
+                  <span className={`font-display text-2xl font-black block ${isLight ? 'text-[#141418]' : 'text-white'}`}>91%</span>
+                  <span className={`text-[10px] font-mono-tech uppercase font-bold ${isLight ? 'text-[#141418]' : 'text-white/60'}`}>Baseline COD Rate</span>
+                </div>
+                <div className={`p-3 border ${isLight ? 'bg-red-50 border-red-500/30 text-red-600' : 'bg-red-950/20 border-red-500/20 text-red-400'}`}>
+                  <span className="font-display text-2xl font-black block">38%</span>
+                  <span className="text-[10px] font-mono-tech uppercase font-bold">Post-Release Drop</span>
+                </div>
+                <div className={`p-3 border ${isLight ? 'bg-[#faf7f2] border-black/15 shadow-sm' : 'bg-white/5 border-white/10'}`}>
+                  <span className={`font-display text-2xl font-black block ${isLight ? 'text-[#141418]' : 'text-white'}`}>~60%</span>
+                  <span className={`text-[10px] font-mono-tech uppercase font-bold ${isLight ? 'text-[#141418]' : 'text-white/60'}`}>Screen Covered</span>
+                </div>
+                <div className={`p-3 border ${isLight ? 'bg-emerald-50 border-emerald-500/30 text-emerald-600' : 'bg-emerald-950/20 border-emerald-500/20 text-emerald-400'}`}>
+                  <span className="font-display text-2xl font-black block">89%</span>
+                  <span className="text-[10px] font-mono-tech uppercase font-bold">Post-Hotfix Recovery</span>
+                </div>
+              </div>
+
+              <div className={`p-4 border text-xs font-mono-tech leading-relaxed ${isLight ? 'bg-white border-black/15 text-[#141418] shadow-sm' : 'bg-black/40 border-white/10 text-gray-200'}`}>
+                <span className="font-bold text-[#d9623d] block mb-1">PM Investigative Method:</span>
+                "When aggregate conversion drops, never average the metric. Segment by OS, device resolution, and input method. Session replays revealed users on 720p screens were aggressively tapping the inactive upper screen because the keyboard overlay blocked the CTA."
+              </div>
             </div>
           </div>
         </section>
 
-        {/* TECHNICAL ECOSYSTEM */}
-        <section id="tech-stack" className="scroll-mt-32">
-          <SectionHeading title="Technical Ecosystem" subtitle="The production-grade stack driving AI business transformation." />
-          <TechMarquee />
-        </section>
+        {/* SECTION 04: CAREER TIMELINE & EDUCATION */}
+        <section id="experience" className="scroll-mt-24">
+          <EditorialHeading 
+            number="04"
+            tag="CAREER TIMELINE"
+            title="Work Experience & Education"
+            subtitle="Track record of turning enterprise friction into automated systems, scalable architectures, and measurable efficiency."
+            isLight={isLight}
+          />
 
-        {/* CASE STUDIES */}
-        <section id="systems">
-          <SectionHeading title="Technical Case Studies" subtitle="Specific problems solved and technical trade-offs made." />
-          <div className="space-y-16">
-            {[
-              {
-                title: "TrialGuard Pro",
-                role: "AI Engineer",
-                problem: "Clinical trials face high patient dropout rates, delaying approvals and increasing costs.",
-                solution: "FastAPI inference service deployed via Docker on AWS EC2 with MLflow model tracking.",
-                tech: ["Python", "FastAPI", "Docker", "AWS", "MLflow"],
-                metrics: "85% accuracy in 3-tier risk stratification.",
-                tradeoff: "Initial hallucination rates in reporting were reduced using deterministic validation middleware.",
-                link: "https://trialguard-pro.vercel.app/"
-              },
-              {
-                title: "RAG Retrieval Pipeline",
-                role: "AI Engineer",
-                problem: "Dense enterprise document lakes required slow, manual keyword searches.",
-                solution: "High-speed retrieval system using semantic search over 40k+ documents.",
-                tech: ["LangChain", "Pinecone", "GROQ LPU", "Python"],
-                metrics: "Processed 40k+ documents with sub-second semantic retrieval.",
-                tradeoff: "Optimized retrieval latency by reducing embedding dimensions from 1536 to 384 with minimal precision loss.",
-                link: "https://github.com/Jayasudhandesigner/RAGMODEL-using-GROQ"
-              },
-              {
-                title: "PyGenGuard",
-                role: "Lead Developer",
-                problem: "LLM applications required a security layer to prevent policy violations at runtime.",
-                solution: "Deterministic security framework published as a Python package acting as middleware.",
-                tech: ["Python", "Middleware Architecture", "PyPI"],
-                metrics: "Successfully published to PyPI; enforces runtime safety policies.",
-                tradeoff: "Traded off slightly higher latency for 100% deterministic policy enforcement.",
-                link: "https://pypi.org/project/pygenguard/"
-              },
-              {
-                title: "Content Recommendation Engine",
-                role: "ML Developer",
-                problem: "Low engagement rates due to generic content feeds.",
-                solution: "Hybrid recommendation engine combining Collaborative Filtering and TF-IDF.",
-                tech: ["SVD", "TF-IDF", "Pandas", "NumPy"],
-                metrics: "Recommendation quality evaluated using offline ranking metrics.",
-                tradeoff: "Selected SVD over complex neural architectures for better explainability and lower compute cost.",
-                link: "https://github.com/Jayasudhandesigner/Content-Recommendation-System"
-              }
-            ].map((study, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.1 }}
-                className="group relative flex flex-col lg:flex-row gap-8 p-1 rounded-none bg-white/[0.02] border border-white/10 hover:border-indigo-500/30 transition-all duration-500 overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                
-                <div className="relative z-10 lg:w-1/3 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/5">
-                  <div className="text-[10px] font-mono text-indigo-400 mb-6 uppercase tracking-[0.4em]">{study.role}</div>
-                  <h3 className="text-4xl font-bold mb-8 tracking-tight leading-tight">{study.title}</h3>
-                  <div className="flex flex-wrap gap-2 mb-10">
-                    {study.tech.map((t, j) => (
-                      <span key={j} className="text-[9px] px-3 py-1.5 bg-white/5 border border-white/10 text-gray-500 font-mono rounded-none uppercase tracking-widest">{t}</span>
-                    ))}
-                  </div>
-                  <div className="flex flex-col gap-5">
-                    <a 
-                      href={study.link} 
-                      target="_blank" 
-                      rel="noreferrer" 
-                      aria-label={`View GitHub repository for ${study.title}`}
-                      className="inline-flex items-center gap-3 text-white hover:text-indigo-400 transition-colors text-[10px] font-bold tracking-[0.2em] uppercase focus:outline-none focus:text-indigo-400"
-                    >
-                      <Github className="w-5 h-5" /> Repository
-                    </a>
-                  </div>
-                </div>
-
-                <div className="relative z-10 lg:w-2/3 flex flex-col gap-10 p-8 lg:p-12">
-                  <div className="grid md:grid-cols-2 gap-10">
-                    <div>
-                      <h4 className="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-4 font-bold">Problem Space</h4>
-                      <p className="text-gray-400 text-sm leading-relaxed font-light">{study.problem}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-4 font-bold">Invention</h4>
-                      <p className="text-gray-400 text-sm leading-relaxed font-light">{study.solution}</p>
-                    </div>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-6 mt-auto">
-                    <div className="p-6 bg-indigo-500/5 border border-indigo-500/10 rounded-none">
-                      <h4 className="text-[10px] text-indigo-400 uppercase tracking-[0.2em] mb-3 font-bold">Impact</h4>
-                      <p className="text-white text-sm font-medium leading-relaxed">{study.metrics}</p>
-                    </div>
-                    <div className="p-6 bg-white/[0.02] border border-white/5 rounded-none">
-                      <h4 className="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-3 font-bold">Engineering Trade-offs</h4>
-                      <p className="text-gray-400 text-xs leading-relaxed font-light">{study.tradeoff}</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* EXPERIENCE TIMELINE */}
-        <section id="experience" className="scroll-mt-32">
-          <SectionHeading title="Experience" subtitle="AI engineering, digital marketing, creative leadership — the full transformation stack." />
-          <div className="relative ml-4 md:ml-12 space-y-16 pb-12">
-            {/* Timeline Line */}
-            <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-indigo-500 via-indigo-500/20 to-transparent"></div>
-
+          <div className="space-y-5 mb-8">
             {experiences.map((exp, i) => (
-              <motion.div 
+              <div 
                 key={i}
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.1 }}
-                className="relative pl-12 group"
+                className={`p-6 sm:p-8 border transition-all ${isLight ? 'bg-white border-black/15 hover:border-[#d9623d] shadow-sm' : 'bg-[#0c0c10] border-white/10 hover:border-[#d9623d]/50'}`}
               >
-                {/* Timeline Dot */}
-                <div className="absolute -left-[6px] top-2 w-3 h-3 rounded-none bg-indigo-500 border-2 border-[#050505] group-hover:scale-150 transition-transform duration-500 z-10 shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
-                
-                <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-8 gap-4">
-                  <div className="space-y-1">
-                    <h3 className="text-3xl font-bold tracking-tight text-white group-hover:text-indigo-400 transition-colors">{exp.role}</h3>
-                    <div className="flex items-center gap-3 text-indigo-300/80 font-mono text-[10px] uppercase tracking-[0.2em] font-bold">
-                      <Briefcase className="w-3 h-3" />
-                      {exp.company}
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b pb-4 mb-4 gap-2">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono-tech text-xs text-[#d9623d] font-bold">[{exp.num}]</span>
+                      <h3 className={`text-xl sm:text-2xl font-display font-bold uppercase ${isLight ? 'text-[#141418]' : 'text-white'}`}>
+                        {exp.role}
+                      </h3>
+                    </div>
+                    <div className={`text-xs font-mono-tech uppercase tracking-wider font-semibold ${isLight ? 'text-[#141418]' : 'text-white/60'} mt-1`}>
+                      {exp.company} • {exp.type}
                     </div>
                   </div>
-                  <div className="text-gray-500 font-mono text-[10px] px-4 py-1.5 border border-white/10 bg-white/[0.02] rounded-none uppercase tracking-widest whitespace-nowrap">
+                  <span className={`text-xs font-mono-tech uppercase px-2.5 py-1 border font-bold ${isLight ? 'border-black/20 bg-white text-[#141418]' : 'border-white/10 bg-white/5 text-white/80'} self-start sm:self-auto`}>
                     {exp.date}
-                  </div>
+                  </span>
                 </div>
-                
-                <ul className="space-y-4 mb-10 max-w-4xl">
-                  {exp.bullets.map((bullet, j) => (
-                    <li key={j} className="text-gray-400 flex items-start gap-4 text-sm leading-relaxed">
-                      <span className="text-indigo-500 mt-1.5 font-bold flex-shrink-0">/</span>
-                      <span className="font-light">{bullet}</span>
+
+                <ul className="space-y-2 mb-4">
+                  {exp.bullets.map((b, bi) => (
+                    <li key={bi} className={`text-xs sm:text-sm leading-relaxed flex items-start gap-2.5 font-medium ${isLight ? 'text-[#141418]' : 'text-gray-300 font-light'}`}>
+                      <span className="text-[#d9623d] font-bold mt-0.5">/</span>
+                      <span>{b}</span>
                     </li>
                   ))}
                 </ul>
 
-                <div className="flex flex-wrap gap-3">
-                  {exp.skills.map((skill, j) => (
-                    <span key={j} className="px-4 py-1.5 text-[9px] border border-white/5 bg-white/[0.01] text-gray-500 uppercase tracking-widest font-bold rounded-none group-hover:border-indigo-500/20 group-hover:text-gray-300 transition-all">
-                      {skill}
+                <div className={`flex flex-wrap gap-1.5 pt-2 border-t ${isLight ? 'border-black/10' : 'border-white/5'}`}>
+                  {exp.skills.map((s, si) => (
+                    <span key={si} className={`text-[9px] font-mono-tech uppercase px-2 py-0.5 border font-semibold ${isLight ? 'border-black/20 bg-white text-[#141418]' : 'border-white/10 bg-white/5 text-white/70'}`}>
+                      {s}
                     </span>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             ))}
+          </div>
+
+          {/* Education Box */}
+          <div className={`p-6 sm:p-8 border ${isLight ? 'bg-[#f8f5ee] border-black/15 shadow-sm' : 'bg-white/5 border-white/10'}`}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="font-mono-tech text-xs text-[#d9623d] font-bold uppercase">[ACADEMIC CREDENTIALS]</span>
+              <span className="h-[1px] w-6 bg-[#d9623d]/60"></span>
+              <span className="text-xs font-mono-tech uppercase text-emerald-600 font-bold">Anabin H+ Certified</span>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-1">
+                <h4 className={`font-display font-bold text-lg uppercase ${isLight ? 'text-[#141418]' : 'text-white'}`}>B.Tech in Artificial Intelligence & Data Science</h4>
+                <div className={`text-xs font-mono-tech font-bold ${isLight ? 'text-[#141418]' : 'text-white/70'}`}>
+                  Sri Krishna College of Technology (SKCT) · 2022 – 2026
+                </div>
+                <div className="text-xs font-mono-tech text-[#d9623d] font-bold">
+                  CGPA: 8.0 · First Class with Distinction
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <h4 className={`font-display font-bold text-lg uppercase ${isLight ? 'text-[#141418]' : 'text-white'}`}>Affiliated Minor in Artificial Intelligence</h4>
+                <div className={`text-xs font-mono-tech font-bold ${isLight ? 'text-[#141418]' : 'text-white/70'}`}>
+                  Indian Institute of Technology, Ropar (IIT Ropar) · 2025 – 2026
+                </div>
+                <div className={`text-xs font-mono-tech font-medium ${isLight ? 'text-[#141418]' : 'text-white/60'}`}>
+                  Core curriculum in deep learning, optimization, and probabilistic modeling.
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-
-
-        {/* CREATIVE PORTFOLIO - UPDATED UI */}
-        <section id="creative">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16">
-            <h2 className="text-5xl md:text-7xl font-bold tracking-tight uppercase">Creative Portfolio</h2>
+        {/* SECTION 05: CREATIVE DIRECTION & 3D ASSETS */}
+        <section id="creative" className="scroll-mt-24">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 mb-8 gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-mono-tech text-xs text-[#d9623d] font-bold">[05]</span>
+                <span className={`text-xs font-mono-tech uppercase font-bold ${isLight ? 'text-[#141418]' : 'text-white/60'}`}>DESIGN & VISUAL CRAFT</span>
+              </div>
+              <h2 className={`text-3xl sm:text-4xl font-display font-black uppercase ${isLight ? 'text-[#141418]' : 'text-white'}`}>
+                Creative Direction & 3D Shaders
+              </h2>
+            </div>
             <a 
               href="https://www.artstation.com/jayasudhanmuneeswaran" 
               target="_blank" 
               rel="noreferrer"
-              className="group flex items-center gap-3 px-6 py-3 rounded-none border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 uppercase text-xs font-bold tracking-widest"
+              className="pm-btn-secondary !py-2 !px-4 self-start sm:self-auto"
             >
-              View ArtStation 
-              <div className="w-8 h-8 rounded-none border border-current flex items-center justify-center group-hover:rotate-180 transition-transform duration-500">
-                <MoveLeft className="w-4 h-4" />
-              </div>
+              ArtStation Portfolio <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: "3D Digital Art", img: "images/3d.jpg" },
-              { label: "Campaign Design", img: "images/markettingposter.png" },
+              { label: "3D Digital Art & Shaders", img: "images/3d.jpg" },
+              { label: "Campaign & Product Design", img: "images/markettingposter.png" },
               { label: "Product Visualization", img: "images/product.jpg" },
-              { label: "Packaging Design", img: "images/packaging_design.png" },
+              { label: "Packaging & Brand Identity", img: "images/packaging_design.png" }
             ].map((work, i) => (
-              <motion.div 
-                key={i} 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="relative aspect-square overflow-hidden group rounded-none bg-zinc-900"
-              >
+              <div key={i} className={`relative aspect-square overflow-hidden group border ${isLight ? 'border-black/15 shadow-sm' : 'border-black/10'}`}>
                 <img 
                   src={work.img} 
                   alt={work.label} 
-                  className="w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
-                  <span className="text-white font-medium uppercase tracking-widest text-sm">{work.label}</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <span className="text-white font-mono-tech text-xs font-bold uppercase">{work.label}</span>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>
 
-        {/* CONTACT */}
-        <section id="contact" className="relative py-24 border-t border-white/10 text-center">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900/30 via-black to-black -z-10"></div>
-          <h2 className="text-5xl md:text-7xl font-medium tracking-tight mb-6 uppercase">Let's Transform.</h2>
-          <p className="text-xl text-gray-400 mb-12 font-mono">Open for roles in AI Business Transformation, Product Engineering, and Digital Growth.</p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <a href="mailto:jayasudhanmuneeswaran@gmail.com" className="px-8 py-4 bg-white text-black font-semibold hover:bg-gray-200 transition-colors w-full sm:w-auto flex justify-center items-center gap-2 uppercase tracking-widest text-sm">
-              <Mail className="w-5 h-5" /> Email
-            </a>
-            <a href="tel:9787080805" className="px-8 py-4 bg-transparent border border-white/20 hover:bg-white/10 transition-colors w-full sm:w-auto flex justify-center items-center gap-2 uppercase tracking-widest text-sm">
-              <Phone className="w-5 h-5" /> Call
-            </a>
-          </div>
+        {/* SECTION 06: DIRECT REACHOUT & CALL TO ACTION */}
+        <section id="contact" className={`relative py-12 border p-6 sm:p-10 text-center scroll-mt-24 ${isLight ? 'border-black/15 bg-white shadow-sm' : 'border-white/10 bg-[#0c0c10]'}`}>
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 border border-[#d9623d]/30 bg-[#d9623d]/10 text-xs font-mono-tech text-[#d9623d] uppercase tracking-widest font-bold">
+              <Asterisk className="w-3.5 h-3.5 animate-spin-slow" /> Let's Create Impact
+            </div>
 
-          <div className="flex items-center justify-center gap-8 mt-16">
-            <a href="https://www.linkedin.com/in/jayasudhan-m-a0b9b2244/" className="text-gray-400 hover:text-white transition-colors"><Linkedin className="w-6 h-6" /></a>
-            <a href="https://github.com/Jayasudhandesigner" className="text-gray-400 hover:text-white transition-colors"><Github className="w-6 h-6" /></a>
+            <h2 className={`text-3xl sm:text-5xl font-display font-black uppercase tracking-tight ${isLight ? 'text-[#141418]' : 'text-white'}`}>
+              Have an Ambitious Problem?
+            </h2>
+
+            <p className={`font-serif-editorial italic text-base sm:text-lg ${isLight ? 'text-[#141418] font-medium' : 'text-gray-300 font-light'}`}>
+              "Open for AI Product Manager, Technical PM (AI/ML), and 0→1 System Builder opportunities."
+            </p>
+
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a 
+                href="mailto:jayasudhanmuneeswaran@gmail.com" 
+                className="pm-btn-primary !py-3.5 !px-6 w-full sm:w-auto"
+              >
+                <Mail className="w-4 h-4" /> jayasudhanmuneeswaran@gmail.com
+              </a>
+              <a 
+                href="tel:9787080805" 
+                className="pm-btn-secondary !py-3.5 !px-6 w-full sm:w-auto"
+              >
+                <Phone className="w-4 h-4" /> +91 9787080805
+              </a>
+            </div>
+
+            <div className={`pt-8 flex flex-wrap items-center justify-center gap-6 border-t text-xs font-mono-tech uppercase tracking-widest ${isLight ? 'border-black/15 text-[#141418]' : 'border-white/10 text-white/60'}`}>
+              <a href="https://www.linkedin.com/in/jayasudhan-m-a0b9b2244/" target="_blank" rel="noreferrer" className="hover:text-[#d9623d] transition-colors flex items-center gap-1.5 font-bold">
+                <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+              </a>
+              <a href="https://github.com/Jayasudhandesigner" target="_blank" rel="noreferrer" className="hover:text-[#d9623d] transition-colors flex items-center gap-1.5 font-bold">
+                <Github className="w-3.5 h-3.5" /> GitHub
+              </a>
+              <a href="https://pypi.org/project/pygenguard/" target="_blank" rel="noreferrer" className="hover:text-[#d9623d] transition-colors flex items-center gap-1.5 font-bold">
+                <Shield className="w-3.5 h-3.5" /> PyPI
+              </a>
+            </div>
           </div>
         </section>
 
       </div>
 
       {/* FLOATING DOCK NAVIGATION */}
-      <div className="fixed bottom-0 left-0 w-full pointer-events-none z-[1000] pb-8">
+      <div className="fixed bottom-0 left-0 w-full pointer-events-none z-[1000] pb-6">
         <div className="pointer-events-auto flex justify-center">
           <Dock 
             items={[
-              { icon: <Home size={22} />, label: 'Home', onClick: () => scrollToSection('top') },
-              { icon: <Box size={22} />, label: 'Experience', onClick: () => scrollToSection('experience') },
-              { icon: <Code size={22} />, label: 'Projects', onClick: () => scrollToSection('systems') },
-              { icon: <Mail size={22} />, label: 'Contact', onClick: () => scrollToSection('contact') }
+              { icon: <Home size={18} />, label: 'Overview', onClick: () => scrollToSection('overview') },
+              { icon: <Target size={18} />, label: 'Mindset', onClick: () => scrollToSection('mindset') },
+              { icon: <Cpu size={18} />, label: 'Artifacts', onClick: () => scrollToSection('artifacts') },
+              { icon: <SlidersHorizontal size={18} />, label: 'Teardown', onClick: () => scrollToSection('teardown') },
+              { icon: <Briefcase size={18} />, label: 'Experience', onClick: () => scrollToSection('experience') },
+              { icon: isLight ? <Moon size={18} /> : <Sun size={18} />, label: isLight ? 'Dark Mode' : 'Light Mode', onClick: toggleTheme }
             ]}
-            panelHeight={68}
-            baseItemSize={50}
-            magnification={70}
-            distance={150}
+            panelHeight={56}
+            baseItemSize={40}
+            magnification={54}
+            distance={110}
           />
         </div>
       </div>
+
+      {/* Floating Blurb Toast */}
+      {copyToast && (
+        <div className="share-toast">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span>{copyToast}</span>
+        </div>
+      )}
     </div>
   );
 }

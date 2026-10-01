@@ -60,6 +60,11 @@ export const resumeData = {
     ],
     projects: [
         {
+            title: "Poultra 7 – High-Velocity Poultry E-Commerce & Escrow",
+            tech: ["React", "Escrow Engine", "PWA", "Multi-lingual i18n", "Just-In-Time Auth"],
+            description: "SaaS poultry marketplace cutting funnel drop-off from 68% to 14% via open catalog browsing, 1-step OTP checkout, and SafeHatch Escrow trust layer."
+        },
+        {
             title: "MLOps System for Clinical Trial Risk Prediction",
             tech: ["Python", "FastAPI", "Docker", "AWS"],
             description: "Developed an MLOps platform to predict patient dropout risk, achieving 85% accuracy with 3-tier risk stratification."

@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-dark: #050505;
+  --color-dark: #070709;
+  --color-dark-surface: #0e0e12;
   --color-glass: rgba(255, 255, 255, 0.03);
   --color-glass-border: rgba(255, 255, 255, 0.08);
-  --color-primary: #6366f1;
-  --color-accent: #22d3ee;
+  --color-terracotta: #d9623d;
+  --color-amber-accent: #f59e0b;
+  --color-cream: #faf7f2;
 }
 
-
-
 :root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.6;
   font-weight: 400;
 
-  color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #050505;
+  color-scheme: dark light;
+  color: #ffffff;
+  background-color: #070709;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,9 +29,189 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #050505;
-  color: #fff;
+  background-color: #070709;
+  color: #ffffff;
   overflow-x: hidden;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light Theme Root */
+body.light-mode {
+  background-color: #faf7f2;
+  color: #141418 !important;
+}
+
+/* ── COMPREHENSIVE LIGHT MODE HIGH-CONTRAST TYPOGRAPHY ── */
+/* Enforces jet black (#141418) across all body copy, eliminating lightish/washed-out gray */
+body.light-mode p,
+body.light-mode li,
+body.light-mode span:not(.keep-light-color):not([class*="bg-[#d9623d]"]):not([class*="bg-emerald"]):not([class*="bg-red"]):not([class*="bg-blue"]):not([class*="bg-purple"]):not([class*="bg-black"]):not(.share-toast *):not(.text-white-keep):not(.tag-agent):not(.tag-metric):not(.tag-safety):not(.tag-poultra):not(.tag-simulated):not(.tag-rag):not(.tag-consumer):not(.badge-poultra):not(.badge-infra):not(.badge-regu):not(.badge-chronos),
+body.light-mode div:not(.keep-light-color):not([class*="bg-[#d9623d]"]):not([class*="bg-black"]):not(.share-toast *):not(.poultra-phone-notch):not([class*="bg-zinc-950"]):not([class*="bg-red-500"]):not([class*="bg-red-600"]):not([class*="bg-emerald-600"]):not([class*="bg-emerald-500"]):not([class*="bg-blue-600"]):not([class*="bg-purple-600"]),
+body.light-mode a:not(.pm-btn-primary):not([class*="bg-[#d9623d]"]):not([class*="bg-red"]):not([class*="bg-emerald"]),
+body.light-mode button:not(.pm-btn-primary):not([class*="bg-[#d9623d]"]):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not(.sim-run-btn):not(.rag-search-btn):not(.widget-action-btn):not(.active),
+body.light-mode label,
+body.light-mode dt,
+body.light-mode dd,
+body.light-mode td,
+body.light-mode th,
+body.light-mode blockquote,
+body.light-mode input,
+body.light-mode textarea,
+body.light-mode [class*="text-gray-"],
+body.light-mode [class*="text-zinc-"],
+body.light-mode [class*="text-slate-"],
+body.light-mode [class*="text-neutral-"],
+body.light-mode [class*="text-stone-"],
+body.light-mode [class*="text-black/"],
+body.light-mode [class*="text-white/"] {
+  color: #141418 !important;
+}
+
+body.light-mode .text-white:not(.pm-btn-primary *):not([class*="bg-[#d9623d]"] *):not([class*="bg-red-"] *):not([class*="bg-emerald-"] *):not([class*="bg-blue-"] *):not(.sim-run-btn *):not(.active *):not(.share-toast *):not(.tag-agent *):not(.tag-metric *):not(.tag-safety *) {
+  color: #141418 !important;
+}
+
+body.light-mode .font-serif-editorial {
+  color: #141418 !important;
+}
+
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode h3,
+body.light-mode h4,
+body.light-mode h5,
+body.light-mode h6 {
+  color: #141418 !important;
+}
+
+body.light-mode .text-stroke {
+  -webkit-text-stroke: 1.5px rgba(20, 20, 24, 0.25);
+  color: transparent;
+}
+
+body.light-mode .bg-grain {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 0);
+}
+
+body.light-mode ::-webkit-scrollbar-track {
+  background: #faf7f2;
+}
+
+body.light-mode ::-webkit-scrollbar-thumb {
+  background: #d8d2c4;
+}
+
+/* ── UNIFIED PM-GRADE BUTTON SYSTEM ── */
+/* Tier 1: Primary Action (Conviction CTA) */
+.pm-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #d9623d;
+  color: #ffffff !important;
+  border: 1px solid #d9623d;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(217, 98, 61, 0.2);
+}
+
+.pm-btn-primary:hover {
+  background-color: #c04d2a;
+  border-color: #c04d2a;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(217, 98, 61, 0.35);
+}
+
+.pm-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Tier 2: Secondary / Outlined Action */
+.pm-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+body.light-mode .pm-btn-secondary {
+  background: #ffffff;
+  color: #141418 !important;
+  border: 1.5px solid #141418;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.pm-btn-secondary:hover {
+  background: #ffffff;
+  color: #070709 !important;
+  border-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+body.light-mode .pm-btn-secondary:hover {
+  background: #141418;
+  color: #ffffff !important;
+  border-color: #141418;
+}
+
+/* Tier 3: Segmented Pill / Filter Chip */
+.pm-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f3f4f6 !important;
+}
+
+body.light-mode .pm-chip-btn {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #141418 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.pm-chip-btn:hover {
+  border-color: #d9623d;
+  color: #d9623d !important;
+}
+
+.pm-chip-btn.active {
+  background: #d9623d !important;
+  border-color: #d9623d !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(217, 98, 61, 0.3);
 }
 
 * {
@@ -39,19 +219,53 @@ body {
   scroll-behavior: smooth;
 }
 
+/* Typography Classes */
+.font-display {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.04em;
+}
+
+.font-serif-editorial {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-space {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.font-mono-tech {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Text Stroke Outlines (Bazil & Alex Morgan Style) */
+.text-stroke {
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
+  color: transparent;
+}
+
+.text-stroke-active {
+  -webkit-text-stroke: 2px #ffffff;
+  color: transparent;
+}
+
+.text-stroke-terracotta {
+  -webkit-text-stroke: 1.5px #d9623d;
+  color: transparent;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #050505;
+  background: #070709;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: #27272f;
   border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #444452;
 }
 
 @keyframes marquee {
@@ -60,11 +274,26 @@ body {
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 35s linear infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 20s linear infinite;
+}
+
+/* Poster noise grain overlay */
+.bg-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
 }
 
 /* Base Headings */
 h1, h2, h3, h4, h5, h6 {
-  line-height: 1.2;
-  font-weight: 600;
+  line-height: 1.1;
+  font-weight: 800;
 }
