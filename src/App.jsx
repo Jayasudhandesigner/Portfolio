@@ -2,12 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, useScroll } from 'framer-motion';
 import { 
   ArrowRight, CheckCircle2, Terminal, Cpu, Shield, 
-  Mail, Phone, Linkedin, Github, Briefcase, ExternalLink, Home, 
-  Target, Compass, SlidersHorizontal, ArrowUpRight, Sun, Moon, Asterisk,
+  Mail, Phone, Linkedin, Github, ExternalLink,
+  Compass, ArrowUpRight, Sun, Moon, Asterisk,
   Copy, Layers, GitBranch, Database, Zap, BookOpen, User, Award, Check
 } from 'lucide-react';
 import './styles/App.css';
-import Dock from './components/Dock';
 import AiCaseStudiesHub from './components/AiCaseStudiesHub';
 import PyGenGuardDiagram from './components/PyGenGuardDiagram';
 import PoultraFunnelDiagram from './components/PoultraFunnelDiagram';
@@ -432,19 +431,35 @@ export default function App() {
               </div>
             </div>
 
-            {/* Right Column: Framed Portrait */}
+            {/* Right Column: Framed Portrait with Architectural Plaque */}
             <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
-              <div className={`relative z-10 w-[270px] sm:w-[320px] h-[340px] sm:h-[400px] border shadow-xl overflow-hidden grayscale contrast-125 ${isLight ? 'bg-white border-black/20' : 'bg-zinc-950 border-white/20'}`}>
-                <img 
-                  src="images/JayasudhanM.png" 
-                  alt="Jayasudhan Muneeswaran - AI Product Manager" 
-                  className="w-full h-full object-cover" 
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4 text-left">
-                  <div className="text-[9px] font-mono-tech text-[#d9623d] uppercase tracking-[0.2em] font-bold">AI PRODUCT MANAGER</div>
-                  <div className="text-sm font-display font-bold text-white uppercase">Jayasudhan Muneeswaran</div>
-                  <div className="text-[9px] font-mono-tech text-white/60 uppercase">SKCT • Affiliated with IIT Ropar</div>
+              <div className={`relative z-10 w-[270px] sm:w-[320px] border shadow-xl overflow-hidden ${isLight ? 'bg-white border-black/20 shadow-black/5' : 'bg-[#0d0d12] border-white/20'}`}>
+                <div className="w-full h-[310px] sm:h-[360px] overflow-hidden grayscale contrast-125 relative bg-zinc-900">
+                  <img 
+                    src="images/JayasudhanM.png" 
+                    alt="Jayasudhan Muneeswaran - AI Product Manager" 
+                    className="w-full h-full object-cover object-top" 
+                  />
+                  <div className={`absolute inset-0 pointer-events-none ${isLight ? 'bg-gradient-to-t from-black/20 via-transparent to-transparent' : 'bg-gradient-to-t from-black/60 via-transparent to-transparent'}`}></div>
+                </div>
+
+                {/* Architectural Blueprint Nameplate Plaque */}
+                <div className={`p-4 border-t text-left ${isLight ? 'bg-[#f5efe6] border-black/15 text-[#141418]' : 'bg-[#121218] border-white/15 text-white'}`}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[9px] font-mono-tech text-[#d9623d] uppercase tracking-[0.2em] font-bold">
+                      AI PRODUCT MANAGER
+                    </span>
+                    <span className={`text-[8px] font-mono-tech uppercase px-1.5 py-0.5 border font-bold ${isLight ? 'border-black/20 text-[#141418] bg-white' : 'border-white/20 text-white/80 bg-white/5'}`}>
+                      0→1 SYSTEMS
+                    </span>
+                  </div>
+                  <div className={`text-base font-display font-black tracking-tight uppercase leading-tight ${isLight ? 'text-[#141418]' : 'text-white'}`}>
+                    Jayasudhan Muneeswaran
+                  </div>
+                  <div className={`text-[10px] font-mono-tech uppercase mt-1.5 flex items-center gap-1.5 font-medium ${isLight ? 'text-[#141418]/80' : 'text-white/60'}`}>
+                    <Award className="w-3.5 h-3.5 text-[#d9623d] flex-shrink-0" />
+                    <span>SKCT • Affiliated with IIT Ropar</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -817,25 +832,7 @@ export default function App() {
 
       </div>
 
-      {/* FLOATING DOCK NAVIGATION */}
-      <div className="fixed bottom-0 left-0 w-full pointer-events-none z-[1000] pb-6">
-        <div className="pointer-events-auto flex justify-center">
-          <Dock 
-            items={[
-              { icon: <Home size={18} />, label: 'Overview', onClick: () => scrollToSection('overview') },
-              { icon: <Target size={18} />, label: 'Mindset', onClick: () => scrollToSection('mindset') },
-              { icon: <Cpu size={18} />, label: 'Artifacts', onClick: () => scrollToSection('artifacts') },
-              { icon: <SlidersHorizontal size={18} />, label: 'Teardown', onClick: () => scrollToSection('teardown') },
-              { icon: <Briefcase size={18} />, label: 'Experience', onClick: () => scrollToSection('experience') },
-              { icon: isLight ? <Moon size={18} /> : <Sun size={18} />, label: isLight ? 'Dark Mode' : 'Light Mode', onClick: toggleTheme }
-            ]}
-            panelHeight={56}
-            baseItemSize={40}
-            magnification={54}
-            distance={110}
-          />
-        </div>
-      </div>
+
 
       {/* Floating Blurb Toast */}
       {copyToast && (
